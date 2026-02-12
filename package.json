@@ -1,0 +1,17 @@
+{
+  "name": "asylguiden.se",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Resource website for refugees in Sweden",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:backend": "npm run develop --workspace=backend",
+    "build:frontend": "npm run build --workspace=frontend",
+    "build:backend": "npm run build --workspace=backend",
+    "dev:services": "docker compose -f docker-compose.dev.yml up -d"
+  }
+}

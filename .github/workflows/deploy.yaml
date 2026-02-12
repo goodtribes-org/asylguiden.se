@@ -1,0 +1,45 @@
+name: Deploy To Production
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+on:
+  workflow_run:
+    workflows: [Docker Image Publish]
+    types:
+      - completed
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Check out deploy manifest
+        uses: actions/checkout@v4
+        with:
+          repository: Hacking-Robots-and-Beer/deploy
+          ref: main
+          path: deploy
+          ssh-key: ${{ secrets.DEPLOY_SSH_KEY }}
+      - name: Render Helm templates
+        uses: WyriHaximus/github-action-helm3@v3
+        with:
+          exec: |
+            helm template chart/ --set frontend.image.tag=${{ github.sha }} --set backend.image.tag=${{ github.sha }} > deploy/asylguiden/deploy.yaml
+            cat deploy/asylguiden/deploy.yaml
+      - name: GIT commit and push all changed files
+        env:
+          CI_COMMIT_MESSAGE: "ci: update asylguiden deployment to ${{ github.sha }}"
+          CI_COMMIT_AUTHOR: Continuous Integration
+        run: |
+          cd deploy
+          mkdir -p asylguiden
+          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
+          git config --global user.email "ci@users.noreply.github.com"
+          git add asylguiden/deploy.yaml
+          git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
+          git push

@@ -1,0 +1,97 @@
+{
+  "common": {
+    "siteName": "Asylguiden",
+    "siteDescription": "Information and guidance for asylum seekers in Sweden",
+    "home": "Home",
+    "articles": "Articles",
+    "categories": "Categories",
+    "search": "Search",
+    "login": "Log in",
+    "register": "Register",
+    "logout": "Log out",
+    "profile": "Profile",
+    "bookmarks": "Bookmarks",
+    "language": "Language",
+    "readMore": "Read more",
+    "backToHome": "Back to home",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "noResults": "No results found",
+    "minuteRead": "{count} min read",
+    "showAll": "Show all"
+  },
+  "home": {
+    "heroTitle": "Welcome to Asylguiden",
+    "heroSubtitle": "Your guide to information about the asylum process, rights and daily life in Sweden",
+    "searchPlaceholder": "Search for information...",
+    "featuredGuides": "Featured guides",
+    "allCategories": "All categories",
+    "emergencyInfo": "Important information"
+  },
+  "article": {
+    "relatedArticles": "Related articles",
+    "source": "Source",
+    "lastUpdated": "Last updated",
+    "difficulty": "Difficulty",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+    "bookmark": "Save",
+    "bookmarked": "Saved",
+    "shareArticle": "Share article"
+  },
+  "category": {
+    "articlesInCategory": "Articles in {category}",
+    "noArticles": "No articles in this category yet"
+  },
+  "search": {
+    "title": "Search results",
+    "placeholder": "Search for articles, guides and information...",
+    "resultsFor": "Results for \"{query}\"",
+    "noResults": "No results for \"{query}\"",
+    "tryDifferent": "Try different search terms",
+    "filterByCategory": "Filter by category",
+    "allCategories": "All categories"
+  },
+  "auth": {
+    "loginTitle": "Log in",
+    "registerTitle": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "name": "Name",
+    "loginButton": "Log in",
+    "registerButton": "Create account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "orContinueWith": "Or continue with",
+    "invalidCredentials": "Invalid email or password",
+    "passwordMismatch": "Passwords do not match",
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 8 characters"
+  },
+  "bookmarks": {
+    "title": "My bookmarks",
+    "empty": "You have no saved articles yet",
+    "emptyDescription": "Click the bookmark icon on an article to save it here",
+    "loginRequired": "You must be logged in to save bookmarks"
+  },
+  "profile": {
+    "title": "My profile",
+    "preferredLanguage": "Preferred language",
+    "savedArticles": "Saved articles"
+  },
+  "footer": {
+    "disclaimer": "Asylguiden is an information service and does not replace legal advice. Always contact the Swedish Migration Agency or a legal advisor for your specific case.",
+    "usefulLinks": "Useful links",
+    "migrationsverket": "Swedish Migration Agency",
+    "socialStyrelsen": "National Board of Health and Welfare",
+    "arbetsformedlingen": "Swedish Public Employment Service",
+    "skatteverket": "Swedish Tax Agency",
+    "aboutUs": "About us",
+    "contact": "Contact",
+    "privacyPolicy": "Privacy policy",
+    "copyright": "© {year} Asylguiden. All information is collected from public sources."
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_shared_emergency_banners",
+  "info": {
+    "displayName": "Emergency Banner",
+    "description": "Emergency notification banner",
+    "icon": "exclamation"
+  },
+  "attributes": {
+    "isActive": {
+      "type": "boolean",
+      "default": false
+    },
+    "message": {
+      "type": "text",
+      "required": true
+    },
+    "linkUrl": {
+      "type": "string"
+    },
+    "linkText": {
+      "type": "string"
+    }
+  }
+}

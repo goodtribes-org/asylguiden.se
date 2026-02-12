@@ -1,0 +1,97 @@
+{
+  "common": {
+    "siteName": "دليل اللجوء",
+    "siteDescription": "معلومات وإرشادات لطالبي اللجوء في السويد",
+    "home": "الرئيسية",
+    "articles": "المقالات",
+    "categories": "الفئات",
+    "search": "بحث",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "logout": "تسجيل الخروج",
+    "profile": "الملف الشخصي",
+    "bookmarks": "المحفوظات",
+    "language": "اللغة",
+    "readMore": "اقرأ المزيد",
+    "backToHome": "العودة إلى الرئيسية",
+    "loading": "جارٍ التحميل...",
+    "error": "حدث خطأ ما",
+    "noResults": "لم يتم العثور على نتائج",
+    "minuteRead": "{count} دقيقة قراءة",
+    "showAll": "عرض الكل"
+  },
+  "home": {
+    "heroTitle": "مرحباً بك في دليل اللجوء",
+    "heroSubtitle": "دليلك للمعلومات حول عملية اللجوء والحقوق والحياة اليومية في السويد",
+    "searchPlaceholder": "ابحث عن معلومات...",
+    "featuredGuides": "أدلة مميزة",
+    "allCategories": "جميع الفئات",
+    "emergencyInfo": "معلومات مهمة"
+  },
+  "article": {
+    "relatedArticles": "مقالات ذات صلة",
+    "source": "المصدر",
+    "lastUpdated": "آخر تحديث",
+    "difficulty": "مستوى الصعوبة",
+    "beginner": "مبتدئ",
+    "intermediate": "متوسط",
+    "advanced": "متقدم",
+    "bookmark": "حفظ",
+    "bookmarked": "محفوظ",
+    "shareArticle": "مشاركة المقال"
+  },
+  "category": {
+    "articlesInCategory": "مقالات في {category}",
+    "noArticles": "لا توجد مقالات في هذه الفئة بعد"
+  },
+  "search": {
+    "title": "نتائج البحث",
+    "placeholder": "ابحث عن مقالات وأدلة ومعلومات...",
+    "resultsFor": "نتائج البحث عن \"{query}\"",
+    "noResults": "لا توجد نتائج لـ \"{query}\"",
+    "tryDifferent": "جرب كلمات بحث مختلفة",
+    "filterByCategory": "تصفية حسب الفئة",
+    "allCategories": "جميع الفئات"
+  },
+  "auth": {
+    "loginTitle": "تسجيل الدخول",
+    "registerTitle": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "name": "الاسم",
+    "loginButton": "تسجيل الدخول",
+    "registerButton": "إنشاء حساب",
+    "noAccount": "ليس لديك حساب؟",
+    "hasAccount": "لديك حساب بالفعل؟",
+    "orContinueWith": "أو تابع باستخدام",
+    "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "passwordMismatch": "كلمات المرور غير متطابقة",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "passwordRequired": "كلمة المرور مطلوبة",
+    "passwordMinLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل"
+  },
+  "bookmarks": {
+    "title": "محفوظاتي",
+    "empty": "ليس لديك مقالات محفوظة بعد",
+    "emptyDescription": "انقر على أيقونة الحفظ في المقال لحفظه هنا",
+    "loginRequired": "يجب تسجيل الدخول لحفظ المقالات"
+  },
+  "profile": {
+    "title": "ملفي الشخصي",
+    "preferredLanguage": "اللغة المفضلة",
+    "savedArticles": "المقالات المحفوظة"
+  },
+  "footer": {
+    "disclaimer": "دليل اللجوء هو خدمة معلوماتية ولا يحل محل الاستشارة القانونية. تواصل دائماً مع مصلحة الهجرة السويدية أو مستشار قانوني بخصوص حالتك.",
+    "usefulLinks": "روابط مفيدة",
+    "migrationsverket": "مصلحة الهجرة السويدية",
+    "socialStyrelsen": "المجلس الوطني للصحة والرفاه",
+    "arbetsformedlingen": "مكتب التوظيف العام السويدي",
+    "skatteverket": "مصلحة الضرائب السويدية",
+    "aboutUs": "من نحن",
+    "contact": "اتصل بنا",
+    "privacyPolicy": "سياسة الخصوصية",
+    "copyright": "© {year} دليل اللجوء. جميع المعلومات مجمعة من مصادر عامة."
+  }
+}

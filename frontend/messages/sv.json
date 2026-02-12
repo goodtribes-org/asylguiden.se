@@ -1,0 +1,97 @@
+{
+  "common": {
+    "siteName": "Asylguiden",
+    "siteDescription": "Information och vägledning för asylsökande i Sverige",
+    "home": "Hem",
+    "articles": "Artiklar",
+    "categories": "Kategorier",
+    "search": "Sök",
+    "login": "Logga in",
+    "register": "Registrera",
+    "logout": "Logga ut",
+    "profile": "Profil",
+    "bookmarks": "Bokmärken",
+    "language": "Språk",
+    "readMore": "Läs mer",
+    "backToHome": "Tillbaka till startsidan",
+    "loading": "Laddar...",
+    "error": "Något gick fel",
+    "noResults": "Inga resultat hittades",
+    "minuteRead": "{count} min läsning",
+    "showAll": "Visa alla"
+  },
+  "home": {
+    "heroTitle": "Välkommen till Asylguiden",
+    "heroSubtitle": "Din guide till information om asylprocessen, rättigheter och vardagsliv i Sverige",
+    "searchPlaceholder": "Sök efter information...",
+    "featuredGuides": "Utvalda guider",
+    "allCategories": "Alla kategorier",
+    "emergencyInfo": "Viktig information"
+  },
+  "article": {
+    "relatedArticles": "Relaterade artiklar",
+    "source": "Källa",
+    "lastUpdated": "Senast uppdaterad",
+    "difficulty": "Svårighetsgrad",
+    "beginner": "Nybörjare",
+    "intermediate": "Medel",
+    "advanced": "Avancerad",
+    "bookmark": "Spara",
+    "bookmarked": "Sparad",
+    "shareArticle": "Dela artikel"
+  },
+  "category": {
+    "articlesInCategory": "Artiklar i {category}",
+    "noArticles": "Inga artiklar i denna kategori ännu"
+  },
+  "search": {
+    "title": "Sökresultat",
+    "placeholder": "Sök efter artiklar, guider och information...",
+    "resultsFor": "Resultat för \"{query}\"",
+    "noResults": "Inga resultat för \"{query}\"",
+    "tryDifferent": "Försök med andra sökord",
+    "filterByCategory": "Filtrera efter kategori",
+    "allCategories": "Alla kategorier"
+  },
+  "auth": {
+    "loginTitle": "Logga in",
+    "registerTitle": "Skapa konto",
+    "email": "E-post",
+    "password": "Lösenord",
+    "confirmPassword": "Bekräfta lösenord",
+    "name": "Namn",
+    "loginButton": "Logga in",
+    "registerButton": "Skapa konto",
+    "noAccount": "Har du inget konto?",
+    "hasAccount": "Har du redan ett konto?",
+    "orContinueWith": "Eller fortsätt med",
+    "invalidCredentials": "Felaktig e-post eller lösenord",
+    "passwordMismatch": "Lösenorden matchar inte",
+    "emailRequired": "E-post krävs",
+    "passwordRequired": "Lösenord krävs",
+    "passwordMinLength": "Lösenordet måste vara minst 8 tecken"
+  },
+  "bookmarks": {
+    "title": "Mina bokmärken",
+    "empty": "Du har inga sparade artiklar ännu",
+    "emptyDescription": "Klicka på bokmärkesikonen på en artikel för att spara den här",
+    "loginRequired": "Du måste vara inloggad för att spara bokmärken"
+  },
+  "profile": {
+    "title": "Min profil",
+    "preferredLanguage": "Föredraget språk",
+    "savedArticles": "Sparade artiklar"
+  },
+  "footer": {
+    "disclaimer": "Asylguiden är en informationstjänst och ersätter inte juridisk rådgivning. Kontakta alltid Migrationsverket eller en juridisk rådgivare för ditt specifika ärende.",
+    "usefulLinks": "Användbara länkar",
+    "migrationsverket": "Migrationsverket",
+    "socialStyrelsen": "Socialstyrelsen",
+    "arbetsformedlingen": "Arbetsförmedlingen",
+    "skatteverket": "Skatteverket",
+    "aboutUs": "Om oss",
+    "contact": "Kontakt",
+    "privacyPolicy": "Integritetspolicy",
+    "copyright": "© {year} Asylguiden. All information samlas från offentliga källor."
+  }
+}
