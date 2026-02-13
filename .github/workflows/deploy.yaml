@@ -1,15 +1,20 @@
 name: Deploy To Production
+
 env:
-  REGISTRY: ghcr.io
+  REGISTRY: docker.io
   IMAGE_NAME: ${{ github.repository }}
+  TARGET_FILE: ${{ github.event.repository.name }}.yaml
+  TARGET_DIR: manifest/${{ github.event.repository.name }}
+
 on:
   workflow_run:
-    workflows: [Docker Image Publish]
+    workflows: [Docker Publish]
     types:
       - completed
+
 jobs:
   deploy:
-    runs-on: arc-runner-set-hrb
+    runs-on: arc-runner-set-samma
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
@@ -18,28 +23,44 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Check out deploy manifest
+
+      - name: Check out Manifest
         uses: actions/checkout@v4
         with:
-          repository: Hacking-Robots-and-Beer/deploy
+          repository: samma-io/deploy
           ref: main
-          path: deploy
-          ssh-key: ${{ secrets.DEPLOY_SSH_KEY }}
-      - name: Render Helm templates
+          path: manifest
+          ssh-key: ${{ secrets.SAM_SSH }}
+
+      - name: Deploy
         uses: WyriHaximus/github-action-helm3@v3
         with:
           exec: |
-            helm template chart/ --set frontend.image.tag=${{ github.sha }} --set backend.image.tag=${{ github.sha }} > deploy/asylguiden/deploy.yaml
-            cat deploy/asylguiden/deploy.yaml
+            if [ ! -d "chart" ]; then
+              echo "::error::Chart directory not found"
+              exit 1
+            fi
+            mkdir -p ${{ env.TARGET_DIR }}
+            helm template chart/ --set frontend.image.tag=${{ github.sha }} --set backend.image.tag=${{ github.sha }} > ${{ env.TARGET_DIR }}/${{ env.TARGET_FILE }}
+            cat ${{ env.TARGET_DIR }}/${{ env.TARGET_FILE }}
+
       - name: GIT commit and push all changed files
         env:
-          CI_COMMIT_MESSAGE: "ci: update asylguiden deployment to ${{ github.sha }}"
+          CI_COMMIT_MESSAGE: Continuous Integration Build Artifacts
           CI_COMMIT_AUTHOR: Continuous Integration
         run: |
-          cd deploy
-          mkdir -p asylguiden
+          cd manifest
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
-          git config --global user.email "ci@users.noreply.github.com"
-          git add asylguiden/deploy.yaml
-          git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
+          git config --global user.email "username@users.noreply.github.com"
+          git add "${{ github.event.repository.name }}/${{ env.TARGET_FILE }}"
+          git commit -a -m "${{ env.CI_COMMIT_MESSAGE }}"
           git push
+
+      - name: Send custom JSON data to Slack workflow
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {"text":"The repo ${{ github.repository }} is build and ready for cluster to deploy"}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
