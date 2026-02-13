@@ -9,7 +9,7 @@ on:
       - completed
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: arc-runner-set-hrb
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read

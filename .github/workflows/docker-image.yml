@@ -37,7 +37,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend
+          images: ghcr.io/hacking-robots-and-beer//${{ env.IMAGE_NAME }}/frontend
 
       - name: Build and push Docker image
         id: build-and-push
@@ -45,7 +45,7 @@ jobs:
         with:
           context: ./frontend
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:${{ github.sha }}
+          tags: ghcr.io/hacking-robots-and-beer/${{ env.IMAGE_NAME }}/frontend:${{ github.sha }}
           labels: ${{ steps.meta.outputs.labels }}
 
   build-backend:
