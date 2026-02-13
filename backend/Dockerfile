@@ -5,7 +5,7 @@ FROM base AS deps
 RUN apk add --no-cache build-base gcc autoconf automake zlib-dev libpng-dev vips-dev
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm install
 
 # Build
 FROM base AS builder

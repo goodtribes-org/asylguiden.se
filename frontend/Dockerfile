@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 COPY frontend/package.json ./frontend/
 COPY backend/package.json ./backend/
-RUN npm ci --workspace=frontend --ignore-scripts
+RUN npm install --workspace=frontend --ignore-scripts
 
 # Build
 FROM base AS builder
