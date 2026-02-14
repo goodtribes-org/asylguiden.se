@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: asylguiden-meilisearch
+  labels:
+    {{- include "asylguiden.labels" . | nindent 4 }}
+    app.kubernetes.io/name: meilisearch
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.meilisearch.service.port }}
+      targetPort: 7700
+      protocol: TCP
+  selector:
+    {{- include "asylguiden.selectorLabels" "meilisearch" | nindent 4 }}

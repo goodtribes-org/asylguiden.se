@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: asylguiden-init-db
+  labels:
+    {{- include "asylguiden.labels" . | nindent 4 }}
+data:
+  init-db.sql: |
+    CREATE DATABASE asylguiden_users;
+    GRANT ALL PRIVILEGES ON DATABASE asylguiden TO asylguiden;
+    GRANT ALL PRIVILEGES ON DATABASE asylguiden_users TO asylguiden;

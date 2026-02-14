@@ -1,0 +1,89 @@
+frontend:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/hacking-robots-and-beer/asyulguiden/frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 3000
+  env:
+    NEXT_PUBLIC_STRAPI_URL: http://asylguiden-backend:1337
+    STRAPI_API_TOKEN: ""
+    NEXT_PUBLIC_MEILI_HOST: http://asylguiden-meilisearch:7700
+    NEXT_PUBLIC_MEILI_SEARCH_KEY: ""
+    NEXTAUTH_URL: https://asylguiden.se
+    NEXTAUTH_SECRET: changeme
+    DATABASE_URL: postgresql://asylguiden:changeme@asylguiden-postgres:5432/asylguiden_users
+
+backend:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/hacking-robots-and-beer/asyulguiden/backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 1337
+  env:
+    HOST: "0.0.0.0"
+    PORT: "1337"
+    APP_KEYS: key1,key2,key3,key4
+    API_TOKEN_SALT: changeme
+    ADMIN_JWT_SECRET: changeme
+    TRANSFER_TOKEN_SALT: changeme
+    JWT_SECRET: changeme
+    DATABASE_CLIENT: postgres
+    DATABASE_HOST: asylguiden-postgres
+    DATABASE_PORT: "5432"
+    DATABASE_NAME: asylguiden
+    DATABASE_USERNAME: asylguiden
+    DATABASE_PASSWORD: changeme
+    DATABASE_SSL: "false"
+    MEILI_HOST: http://asylguiden-meilisearch:7700
+    MEILI_MASTER_KEY: changeme
+
+postgres:
+  replicaCount: 1
+  image:
+    repository: postgres
+    tag: 16-alpine
+    pullPolicy: IfNotPresent
+  service:
+    port: 5432
+  env:
+    POSTGRES_USER: asylguiden
+    POSTGRES_PASSWORD: changeme
+    POSTGRES_DB: asylguiden
+  persistence:
+    size: 5Gi
+    storageClass: ""
+
+meilisearch:
+  replicaCount: 1
+  image:
+    repository: getmeili/meilisearch
+    tag: v1.6
+    pullPolicy: IfNotPresent
+  service:
+    port: 7700
+  env:
+    MEILI_MASTER_KEY: changeme
+    MEILI_ENV: production
+  persistence:
+    size: 5Gi
+    storageClass: ""
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - asylguiden.se
+    - www.asylguiden.se
+  tls:
+    - secretName: asylguiden-tls
+      hosts:
+        - asylguiden.se
+        - www.asylguiden.se
+
+imagePullSecrets: []

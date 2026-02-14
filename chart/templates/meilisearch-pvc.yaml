@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: asylguiden-meilisearch
+  labels:
+    {{- include "asylguiden.labels" . | nindent 4 }}
+    app.kubernetes.io/name: meilisearch
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- if .Values.meilisearch.persistence.storageClass }}
+  storageClassName: {{ .Values.meilisearch.persistence.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.meilisearch.persistence.size }}
