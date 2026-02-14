@@ -25,6 +25,9 @@ spec:
           ports:
             - containerPort: 7700
               protocol: TCP
+          envFrom:
+            - secretRef:
+                name: asylguiden-secret
           env:
             {{- range $key, $value := .Values.meilisearch.env }}
             - name: {{ $key }}

@@ -25,6 +25,9 @@ spec:
           ports:
             - containerPort: 5432
               protocol: TCP
+          envFrom:
+            - secretRef:
+                name: asylguiden-secret
           env:
             {{- range $key, $value := .Values.postgres.env }}
             - name: {{ $key }}
@@ -33,6 +36,7 @@ spec:
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
+              subPath: data
             - name: init-db
               mountPath: /docker-entrypoint-initdb.d
           readinessProbe:
@@ -40,7 +44,7 @@ spec:
               command:
                 - pg_isready
                 - -U
-                - {{ .Values.postgres.env.POSTGRES_USER | default "asylguiden" }}
+                - {{ .Values.secret.POSTGRES_USER | default "asylguiden" }}
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
@@ -48,7 +52,7 @@ spec:
               command:
                 - pg_isready
                 - -U
-                - {{ .Values.postgres.env.POSTGRES_USER | default "asylguiden" }}
+                - {{ .Values.secret.POSTGRES_USER | default "asylguiden" }}
             initialDelaySeconds: 15
             periodSeconds: 20
       volumes:
