@@ -29,7 +29,7 @@ jobs:
         with:
           repository: Hacking-Robots-and-Beer/deploy
           ref: main
-          path: /
+          path: /apps
           ssh-key: ${{ secrets.SAM_SSH }}
 
       - name: Deploy
