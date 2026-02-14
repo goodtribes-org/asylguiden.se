@@ -14,7 +14,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: arc-runner-set-samma
+    runs-on: arc-runner-set-hrb
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
@@ -27,7 +27,7 @@ jobs:
       - name: Check out Manifest
         uses: actions/checkout@v4
         with:
-          repository: samma-io/deploy
+          repository: Hacking-Robots-and-Beer/deploy
           ref: main
           path: manifest
           ssh-key: ${{ secrets.SAM_SSH }}
