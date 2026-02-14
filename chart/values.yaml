@@ -68,9 +68,13 @@ meilisearch:
 
 ingress:
   enabled: true
-  className: nginx
+  className: traefik
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: http
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    kubernetes.io/ingress.class: traefik
+    kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure,web
   hosts:
     - asylguiden.se
     - www.asylguiden.se
