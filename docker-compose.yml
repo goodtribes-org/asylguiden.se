@@ -85,6 +85,20 @@ services:
     networks:
       - asylguiden
 
+  collector:
+    build:
+      context: ./collector
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      STRAPI_URL: http://strapi:1337
+      STRAPI_API_TOKEN: ${COLLECTOR_STRAPI_API_TOKEN}
+      LOG_LEVEL: ${COLLECTOR_LOG_LEVEL:-info}
+    depends_on:
+      - strapi
+    networks:
+      - asylguiden
+
 volumes:
   postgres_data:
   meili_data:

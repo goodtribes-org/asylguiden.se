@@ -91,4 +91,20 @@ secret:
   MEILI_MASTER_KEY: changeme
   DATABASE_URL: postgresql://asylguiden:changeme@asylguiden-postgres:5432/asylguiden_users
 
+collector:
+  image:
+    repository: ghcr.io/hacking-robots-and-beer/asyulguiden/collector
+    tag: latest
+    pullPolicy: IfNotPresent
+  strapiApiToken: ""
+  logLevel: info
+  schedules:
+    # Staggered every Monday UTC to avoid concurrent API calls
+    scb: "0 6 * * 1"
+    unhcr: "0 7 * * 1"
+    eurostat: "0 8 * * 1"
+    frontex: "0 9 * * 1"
+    migrationsverket: "0 10 * * 1"
+    migrationsverket-excel: "0 11 * * 1"
+
 imagePullSecrets: []

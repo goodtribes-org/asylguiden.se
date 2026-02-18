@@ -5,13 +5,16 @@
   "description": "Resource website for refugees in Sweden",
   "workspaces": [
     "frontend",
-    "backend"
+    "backend",
+    "collector"
   ],
   "scripts": {
     "dev:frontend": "npm run dev --workspace=frontend",
     "dev:backend": "npm run develop --workspace=backend",
+    "dev:collector": "npm run dev --workspace=collector",
     "build:frontend": "npm run build --workspace=frontend",
     "build:backend": "npm run build --workspace=backend",
+    "build:collector": "npm run build --workspace=collector",
     "dev:services": "docker compose -f docker-compose.dev.yml up -d"
   }
 }
