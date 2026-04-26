@@ -36,6 +36,13 @@
     "node": ">=20.0.0 <=24.x.x",
     "npm": ">=6.0.0"
   },
+  "overrides": {
+    "@strapi/admin": "5.36.0",
+    "@strapi/content-manager": "5.36.0",
+    "@strapi/content-releases": "5.36.0",
+    "@strapi/content-type-builder": "5.36.0",
+    "@strapi/core": "5.36.0"
+  },
   "strapi": {
     "uuid": "1b294bc6-3be4-4fff-aa83-c3187fd44df9",
     "installId": "004e0136d5811bfe47b0020252603cc115a4ff25d586eaf3156509e3f6483335"
