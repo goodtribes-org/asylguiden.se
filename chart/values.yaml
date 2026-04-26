@@ -107,4 +107,5 @@ collector:
     migrationsverket: "0 10 * * 1"
     migrationsverket-excel: "0 11 * * 1"
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: ghcr-pull-secret
