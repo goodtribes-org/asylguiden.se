@@ -1,18 +1,21 @@
 FROM node:20-alpine AS base
 
-# Dependencies
+# Dependencies — use workspace root lock file for consistent resolution
 FROM base AS deps
 RUN apk add --no-cache build-base gcc autoconf automake zlib-dev libpng-dev vips-dev
 WORKDIR /app
-COPY package.json package-lock.json* ./
-RUN npm install
+COPY package.json package-lock.json ./
+COPY backend/package.json ./backend/
+COPY frontend/package.json ./frontend/
+COPY collector/package.json ./collector/
+RUN npm ci
 
 # Build
 FROM base AS builder
 RUN apk add --no-cache vips-dev
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY backend/ .
 ENV NODE_ENV=production
 RUN npm run build
 
