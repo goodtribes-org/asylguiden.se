@@ -1,11 +1,5 @@
 name: Deploy To Production
 
-env:
-  REGISTRY: docker.io
-  IMAGE_NAME: ${{ github.repository }}
-  TARGET_FILE: ${{ github.event.repository.name }}.yaml
-  TARGET_DIR: manifest/${{ github.event.repository.name }}
-
 on:
   workflow_run:
     workflows: [Docker Publish]
@@ -14,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: arc-runner-set-hrb
+    runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
@@ -27,10 +21,10 @@ jobs:
       - name: Check out Manifest
         uses: actions/checkout@v4
         with:
-          repository: Hacking-Robots-and-Beer/deploy
+          repository: goodtribes-org/deploy
           ref: main
           path: manifest
-          ssh-key: ${{ secrets.SAM_SSH }}
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
 
       - name: Deploy
         uses: WyriHaximus/github-action-helm3@v3
@@ -40,9 +34,8 @@ jobs:
               echo "::error::Chart directory not found"
               exit 1
             fi
-            mkdir -p ${{ env.TARGET_DIR }}
-            helm template chart/ --set frontend.image.tag=${{ github.sha }} --set backend.image.tag=${{ github.sha }} > ${{ env.TARGET_DIR }}/${{ env.TARGET_FILE }}
-            cat ${{ env.TARGET_DIR }}/${{ env.TARGET_FILE }}
+            helm template chart/ --set frontend.image.tag=${{ github.sha }} --set backend.image.tag=${{ github.sha }} > manifest/asylguiden/asylguiden.yaml
+            cat manifest/asylguiden/asylguiden.yaml
 
       - name: GIT commit and push all changed files
         env:
@@ -52,7 +45,7 @@ jobs:
           cd manifest
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
           git config --global user.email "username@users.noreply.github.com"
-          git add "${{ github.event.repository.name }}/${{ env.TARGET_FILE }}"
+          git add asylguiden/asylguiden.yaml
           git commit -a -m "${{ env.CI_COMMIT_MESSAGE }}"
           git push
 
