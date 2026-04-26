@@ -3,7 +3,7 @@ namespace: asylguiden
 frontend:
   replicaCount: 1
   image:
-    repository: ghcr.io/hacking-robots-and-beer/asyulguiden/frontend
+    repository: ghcr.io/goodtribes-org/asylguiden.se/frontend
     tag: latest
     pullPolicy: IfNotPresent
   service:
@@ -19,7 +19,7 @@ frontend:
 backend:
   replicaCount: 1
   image:
-    repository: ghcr.io/hacking-robots-and-beer/asyulguiden/backend
+    repository: ghcr.io/goodtribes-org/asylguiden.se/backend
     tag: latest
     pullPolicy: IfNotPresent
   service:
@@ -93,7 +93,7 @@ secret:
 
 collector:
   image:
-    repository: ghcr.io/hacking-robots-and-beer/asyulguiden/collector
+    repository: ghcr.io/goodtribes-org/asylguiden.se/collector
     tag: latest
     pullPolicy: IfNotPresent
   strapiApiToken: ""
