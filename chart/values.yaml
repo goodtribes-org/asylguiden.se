@@ -84,13 +84,6 @@ ingress:
         - asylguiden.se
         - www.asylguiden.se
 
-secret:
-  POSTGRES_USER: asylguiden
-  POSTGRES_PASSWORD: changeme
-  POSTGRES_DB: asylguiden
-  MEILI_MASTER_KEY: changeme
-  DATABASE_URL: postgresql://asylguiden:changeme@asylguiden-postgres:5432/asylguiden_users
-
 collector:
   image:
     repository: ghcr.io/goodtribes-org/asylguiden.se/collector
