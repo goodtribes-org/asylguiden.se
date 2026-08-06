@@ -28,4 +28,9 @@ COPY --from=builder --chown=collector:collector /app/package.json ./package.json
 
 USER collector
 
-CMD ["node", "dist/index.js"]
+# ENTRYPOINT, not CMD: the CronJobs in chart/templates/collector-cronjob.yaml pass
+# args like ["--once", "--collector=scb"], and args replace CMD. With only a CMD the
+# node:20-alpine ENTRYPOINT (docker-entrypoint.sh) would receive "--once" as its first
+# argument, prepend "node", and run `node --once` — which exits 9. As an ENTRYPOINT the
+# args are appended instead, and `docker run <image> --once --collector=scb` works too.
+ENTRYPOINT ["node", "dist/index.js"]

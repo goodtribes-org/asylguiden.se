@@ -9,7 +9,18 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # Three conditions, all required:
+    #   conclusion  — the build actually succeeded
+    #   event       — docker-image.yml also runs on pull_request, where it skips the
+    #                 push. Without this guard a PR build would render and commit a
+    #                 production manifest pointing at image tags that were never
+    #                 published, from any PR, without anything being merged.
+    #   head_branch — workflow_run does NOT inherit the triggering run's branch
+    #                 filter, so without this a v*.*.* tag push would deploy too.
+    if: >-
+      ${{ github.event.workflow_run.conclusion == 'success'
+      && github.event.workflow_run.event == 'push'
+      && github.event.workflow_run.head_branch == 'main' }}
     permissions:
       contents: read
       packages: write
@@ -34,7 +45,12 @@ jobs:
               echo "::error::Chart directory not found"
               exit 1
             fi
-            helm template chart/ --set frontend.image.tag=${{ github.sha }} --set backend.image.tag=${{ github.sha }} > manifest/asylguiden/asylguiden.yaml
+            # Render to a temp file and move it into place only on success.
+            # Redirecting straight to the target truncates it *before* helm runs, and
+            # the last command in this block is `cat`, which succeeds on an empty file
+            # — so a failed render could pass this step and push an empty manifest.
+            helm template chart/ --set frontend.image.tag=${{ github.sha }} --set backend.image.tag=${{ github.sha }} --set collector.image.tag=${{ github.sha }} > /tmp/asylguiden.yaml
+            mv /tmp/asylguiden.yaml manifest/asylguiden/asylguiden.yaml
             cat manifest/asylguiden/asylguiden.yaml
 
       - name: GIT commit and push all changed files
@@ -46,7 +62,13 @@ jobs:
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
           git config --global user.email "username@users.noreply.github.com"
           git add asylguiden/asylguiden.yaml
-          git commit -a -m "${{ env.CI_COMMIT_MESSAGE }}"
+          # Not `|| true` — that would swallow real failures too. An unchanged
+          # manifest is a clean no-op; anything else still fails the job.
+          if git diff --cached --quiet; then
+            echo "Manifest unchanged — nothing to commit."
+            exit 0
+          fi
+          git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
           git push
 
       - name: Send custom JSON data to Slack workflow
