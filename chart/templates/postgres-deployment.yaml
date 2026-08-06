@@ -42,17 +42,17 @@ spec:
           readinessProbe:
             exec:
               command:
-                - pg_isready
-                - -U
-                - {{ .Values.secret.POSTGRES_USER | default "asylguiden" }}
+                - sh
+                - -c
+                - 'pg_isready -U "${POSTGRES_USER:-asylguiden}"'
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
             exec:
               command:
-                - pg_isready
-                - -U
-                - {{ .Values.secret.POSTGRES_USER | default "asylguiden" }}
+                - sh
+                - -c
+                - 'pg_isready -U "${POSTGRES_USER:-asylguiden}"'
             initialDelaySeconds: 15
             periodSeconds: 20
       volumes:
