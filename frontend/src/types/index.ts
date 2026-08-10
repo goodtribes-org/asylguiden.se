@@ -32,6 +32,47 @@ export interface StrapiImageFormat {
 }
 
 // Content types
+export interface Country {
+  id: number;
+  documentId: string;
+  name: string;
+  code: string;
+  defaultLocale: string;
+  contentLocales?: string[];
+  isActive?: boolean;
+  locale: string;
+}
+
+export interface Office {
+  id: number;
+  label?: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+  openingHours?: string;
+  notes?: string;
+}
+
+export interface Authority {
+  id: number;
+  documentId: string;
+  name: string;
+  slug: string;
+  country?: Country;
+  type?: "government" | "municipality" | "bank" | "ngo" | "healthcare";
+  whatTheyDo?: BlockNode[];
+  website?: string;
+  phone?: string;
+  interpreterAvailable?: boolean;
+  languagesSupported?: string[];
+  bookingRequired?: boolean;
+  offices?: Office[];
+  locale: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
 export interface Article {
   id: number;
   documentId: string;
@@ -41,6 +82,7 @@ export interface Article {
   content: BlockNode[];
   featuredImage?: StrapiImage;
   category?: Category;
+  country?: Country;
   tags?: Tag[];
   relatedArticles?: Article[];
   difficulty?: "beginner" | "intermediate" | "advanced";
