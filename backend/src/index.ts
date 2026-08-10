@@ -101,6 +101,85 @@ async function seedAuthorities(strapi: Core.Strapi): Promise<void> {
 }
 
 /**
+ * Swedish key concepts.
+ *
+ * `aliases` is not decoration: #20's criterion "searching 'bank id' finds
+ * 'BankID'" cannot be met by search configuration, because Meilisearch does not
+ * split `BankID` into `bank` + `id`. The literal string has to be in the data,
+ * so it is seeded here.
+ */
+const SEED_CONCEPTS = [
+  {
+    slug: "bankid",
+    term: "BankID",
+    shortDefinition:
+      "En digital legitimation som du använder för att logga in hos myndigheter, banker och vården.",
+    aliases: ["bank id", "bank-id", "bankid", "mobilt bankid"],
+  },
+  {
+    slug: "personnummer",
+    term: "Personnummer",
+    shortDefinition:
+      "Ditt personliga identitetsnummer i folkbokföringen. Myndigheter, vård och banker använder det för att identifiera dig.",
+    aliases: ["person nummer", "personnr", "pnr", "svenskt personnummer"],
+  },
+  {
+    slug: "samordningsnummer",
+    term: "Samordningsnummer",
+    shortDefinition:
+      "Ett identitetsnummer för dig som inte är folkbokförd i Sverige men ändå behöver kunna identifieras hos myndigheter.",
+    aliases: ["samordnings nummer", "samordningsnr"],
+  },
+  {
+    slug: "lma-kort",
+    term: "LMA-kort",
+    shortDefinition:
+      "Ett kort som visar att du är asylsökande och registrerad hos Migrationsverket.",
+    aliases: ["lma", "lma kort", "lmakort"],
+  },
+  {
+    slug: "arbetsintyg",
+    term: "Arbetsintyg",
+    shortDefinition:
+      "Ett intyg från en arbetsgivare om att du har arbetat där, och vad arbetet bestod av.",
+    aliases: ["arbets intyg", "anställningsintyg", "tjänstgöringsintyg"],
+  },
+];
+
+/**
+ * Create any seed concept that does not already exist, linked to the default
+ * country. Idempotent on `slug`, via the locale-agnostic query engine.
+ */
+async function seedConcepts(strapi: Core.Strapi): Promise<void> {
+  const defaultCountry = await strapi.db
+    .query("api::country.country")
+    .findOne({ where: { code: SEED_COUNTRIES[0].code }, select: ["id"] });
+
+  if (!defaultCountry) {
+    strapi.log.warn("[seed] default country missing, skipping concept seed");
+    return;
+  }
+
+  for (const seed of SEED_CONCEPTS) {
+    const existing = await strapi.db
+      .query("api::concept.concept")
+      .findOne({ where: { slug: seed.slug }, select: ["id"] });
+
+    if (existing) {
+      continue;
+    }
+
+    await strapi.documents("api::concept.concept").create({
+      data: { ...seed, country: defaultCountry.id },
+      locale: SEED_COUNTRIES[0].defaultLocale,
+      status: "published",
+    });
+
+    strapi.log.info(`[seed] created concept ${seed.slug}`);
+  }
+}
+
+/**
  * Give every article without a country the default one.
  *
  * This lives in bootstrap() rather than in database/migrations/ on purpose:
@@ -164,6 +243,7 @@ export default {
     try {
       await seedCountries(strapi);
       await seedAuthorities(strapi);
+      await seedConcepts(strapi);
       await backfillArticleCountry(strapi);
     } catch (err) {
       strapi.log.error("[bootstrap] country seed/backfill failed", err);

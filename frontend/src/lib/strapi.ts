@@ -1,5 +1,5 @@
 import qs from "qs";
-import type { Article, Category, Tag, FAQ, Homepage, StrapiResponse } from "@/types";
+import type { Article, Category, Tag, FAQ, Homepage, Concept, StrapiResponse } from "@/types";
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
@@ -175,4 +175,19 @@ export function getStrapiImageUrl(url: string | undefined): string {
   if (!url) return "";
   if (url.startsWith("http")) return url;
   return `${STRAPI_URL}${url}`;
+}
+
+// Concepts
+export async function getConceptBySlug(locale: string, slug: string) {
+  const response = await fetchStrapi<Concept[]>(
+    "/concepts",
+    {
+      locale,
+      filters: { slug: { $eq: slug } },
+      populate: { relatedConcepts: { fields: ["term", "slug", "shortDefinition"] } },
+    },
+    { tags: ["concepts"] }
+  );
+
+  return response.data?.[0] ?? null;
 }

@@ -73,6 +73,23 @@ export interface Authority {
   publishedAt: string;
 }
 
+export interface Concept {
+  id: number;
+  documentId: string;
+  term: string;
+  slug: string;
+  country?: Country;
+  shortDefinition: string;
+  explanation?: BlockNode[];
+  whyYouNeedIt?: BlockNode[];
+  aliases?: string[];
+  relatedConcepts?: Concept[];
+  locale: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
 export interface Article {
   id: number;
   documentId: string;
