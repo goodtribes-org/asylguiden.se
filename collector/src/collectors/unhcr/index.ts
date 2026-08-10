@@ -1,16 +1,17 @@
 import { logger } from '../../logger';
 import { upsertArticle } from '../../strapi/upsert';
-import { fetchAsylumSeekersToSweden, fetchAsylumDecisionsForSweden } from './client';
+import { fetchAsylumSeekers, fetchAsylumDecisions } from './client';
 import { transformUnhcrData } from './transform';
+import type { CountryConfig } from '../../countries';
 
-export async function runUnhcr(): Promise<void> {
+export async function runUnhcr(country: CountryConfig): Promise<void> {
   // Use previous year since current year data may not be fully available on the 1st of month
   const year = new Date().getFullYear() - 1;
-  logger.info({ year }, 'Fetching UNHCR data');
+  logger.info({ country: country.code, year }, 'Fetching UNHCR data');
 
   const [seekers, decisions] = await Promise.all([
-    fetchAsylumSeekersToSweden(year),
-    fetchAsylumDecisionsForSweden(year),
+    fetchAsylumSeekers(country, year),
+    fetchAsylumDecisions(country, year),
   ]);
 
   logger.info(
@@ -23,7 +24,7 @@ export async function runUnhcr(): Promise<void> {
     return;
   }
 
-  const payload = transformUnhcrData(year, seekers, decisions);
-  await upsertArticle(payload);
+  const payload = transformUnhcrData(country, year, seekers, decisions);
+  await upsertArticle(payload, country);
   logger.info({ year }, 'UNHCR article upserted');
 }

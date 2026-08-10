@@ -2,6 +2,7 @@ import { heading, paragraph, statsSection, sourceAttribution } from '../../block
 import type { ArticlePayload } from '../../strapi/types';
 import type { EurostatResponse } from './client';
 import { buildSyntheticSourceUrl } from '../../utils/slug';
+import type { CountryConfig } from '../../countries';
 
 const SOURCE_ORG = 'Eurostat – EU:s statistikbyrå';
 const BASE_API_URL =
@@ -37,11 +38,12 @@ function extractValuesByDimension(
 }
 
 export function transformEurostatData(
+  country: CountryConfig,
   year: string,
   applications: EurostatResponse,
   decisions: EurostatResponse,
 ): ArticlePayload {
-  const sourceUrl = buildSyntheticSourceUrl(BASE_API_URL, { geo: 'SE', time: year });
+  const sourceUrl = buildSyntheticSourceUrl(BASE_API_URL, { geo: country.eurostatGeo, time: year });
 
   const totalApplications = extractTotalValue(applications);
   const totalDecisions = extractTotalValue(decisions);

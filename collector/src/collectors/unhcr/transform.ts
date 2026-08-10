@@ -2,16 +2,18 @@ import { heading, paragraph, statsSection, sourceAttribution } from '../../block
 import type { ArticlePayload } from '../../strapi/types';
 import type { UnhcrAsylumEntry } from './client';
 import { buildSyntheticSourceUrl } from '../../utils/slug';
+import type { CountryConfig } from '../../countries';
 
 const SOURCE_ORG = 'UNHCR – FN:s flyktingorgan';
 const BASE_API_URL = 'https://api.unhcr.org/population/v1/asylum-seekers/';
 
 export function transformUnhcrData(
+  country: CountryConfig,
   year: number,
   seekers: UnhcrAsylumEntry[],
   decisions: UnhcrAsylumEntry[],
 ): ArticlePayload {
-  const sourceUrl = buildSyntheticSourceUrl(BASE_API_URL, { coa: 'SWE', year: String(year) });
+  const sourceUrl = buildSyntheticSourceUrl(BASE_API_URL, { coa: country.iso3, year: String(year) });
 
   // Aggregate top countries of origin
   const topOrigins = seekers
