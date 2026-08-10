@@ -43,6 +43,8 @@ export async function getArticles(
     pageSize?: number;
     category?: string;
     featured?: boolean;
+    /** ISO 3166-1 alpha-2 country code, e.g. "se". Routing is #31. */
+    country?: string;
   } = {}
 ) {
   const filters: Record<string, unknown> = {};
@@ -51,6 +53,9 @@ export async function getArticles(
   }
   if (params.featured) {
     filters.isFeatured = { $eq: true };
+  }
+  if (params.country) {
+    filters.country = { code: { $eq: params.country } };
   }
 
   return fetchStrapi<Article[]>("/articles", {

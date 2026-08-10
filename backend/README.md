@@ -56,6 +56,29 @@ Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/
 - [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
 - [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
 
+## Seeding and data migrations
+
+**Seed data and backfills live in `bootstrap()` in `src/index.ts`, not in `database/migrations/`.**
+
+Strapi runs `database/migrations/` *before* `bootstrap()`. A migration that depends on
+seeded rows therefore runs before those rows exist, finds nothing, no-ops — and is then
+recorded as already run, so it never applies. `bootstrap()` runs after the schema is
+synced and the database is ready, which removes the ordering question entirely.
+
+Two rules for anything added there:
+
+- **Idempotent.** It runs on every start. Match on a natural key (`country.code`) and
+  skip what already exists; never blindly insert or overwrite values edited in admin.
+- **Never throw.** A rejected promise in `bootstrap()` stops the server from starting.
+  Catch, log via `strapi.log.error`, and continue — a missing seed row can be added by
+  hand, a backend that will not boot cannot.
+
+`database/migrations/` is still the right place for schema-level changes that Strapi's
+own schema sync does not cover (renaming a column, backfilling a value that has no
+dependency on seeded content).
+
+---
+
 ---
 
 <sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>

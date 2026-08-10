@@ -1,0 +1,44 @@
+{
+  "collectionName": "components_shared_emergency_numbers",
+  "info": {
+    "displayName": "Emergency Number",
+    "description": "A single emergency or helpline number for a country",
+    "icon": "phone"
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "number": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "description": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "availability": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}
