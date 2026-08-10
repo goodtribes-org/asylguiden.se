@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_guide_required_documents",
+  "info": {
+    "displayName": "Required Document",
+    "description": "A document the person must bring to a step",
+    "icon": "file"
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "description": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "whereToGetIt": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}
