@@ -47,7 +47,13 @@
     },
     "type": {
       "type": "enumeration",
-      "enum": ["government", "municipality", "bank", "ngo", "healthcare"],
+      "enum": [
+        "government",
+        "municipality",
+        "bank",
+        "ngo",
+        "healthcare"
+      ],
       "pluginOptions": {
         "i18n": {
           "localized": false
@@ -109,6 +115,17 @@
       "type": "component",
       "repeatable": true,
       "component": "shared.office",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "provenance": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.provenance",
+      "required": true,
       "pluginOptions": {
         "i18n": {
           "localized": false

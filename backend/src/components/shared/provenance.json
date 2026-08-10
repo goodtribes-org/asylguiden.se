@@ -1,0 +1,67 @@
+{
+  "collectionName": "components_shared_provenances",
+  "info": {
+    "displayName": "Provenance",
+    "description": "Where this content came from, and when a human last checked it",
+    "icon": "shield"
+  },
+  "attributes": {
+    "sourceAuthority": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::authority.authority",
+      "description": "Who the source is. Not used when this component sits on `authority` itself — an authority is its own source.",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "sourceUrl": {
+      "type": "string",
+      "description": "Direct link to the source page. A plain string, not a uid — it is an external URL.",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "lastVerifiedAt": {
+      "type": "datetime",
+      "description": "When a HUMAN last checked this against the source. Never written by the collector, the translation worker, or any automated job — #17's freshness monitoring depends on this meaning exactly that.",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "verifiedBy": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "verificationStatus": {
+      "type": "enumeration",
+      "enum": ["verified", "needs-review", "community", "machine-draft"],
+      "default": "needs-review",
+      "required": true,
+      "description": "Defaults to needs-review so nothing can be silently unmarked. Never inherited by a translation — #15/#16 set machine-draft.",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "legalDisclaimer": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}
