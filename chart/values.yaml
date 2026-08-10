@@ -38,6 +38,7 @@ backend:
     DATABASE_NAME: asylguiden
     DATABASE_SSL: "false"
     MEILI_HOST: http://asylguiden-meilisearch:7700
+    CORS_ORIGINS: https://asylguiden.se,https://www.asylguiden.se
 
 postgres:
   replicaCount: 1
