@@ -91,6 +91,17 @@
           "localized": false
         }
       }
+    },
+    "provenance": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.provenance",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
     }
   }
 }

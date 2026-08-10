@@ -90,7 +90,14 @@ async function seedAuthorities(strapi: Core.Strapi): Promise<void> {
     }
 
     await strapi.documents("api::authority.authority").create({
-      data: { ...seed, country: defaultCountry.id },
+      data: {
+        ...seed,
+        country: defaultCountry.id,
+        // needs-review, never `verified`: nothing here has been checked by a
+        // human. lastVerifiedAt is deliberately left unset — it means human
+        // verification and no automated path may write it.
+        provenance: { verificationStatus: "needs-review", sourceUrl: seed.website },
+      },
       locale: SEED_COUNTRIES[0].defaultLocale,
       // Draft on purpose — see SEED_AUTHORITIES.
       status: "draft",
@@ -170,7 +177,11 @@ async function seedConcepts(strapi: Core.Strapi): Promise<void> {
     }
 
     await strapi.documents("api::concept.concept").create({
-      data: { ...seed, country: defaultCountry.id },
+      data: {
+        ...seed,
+        country: defaultCountry.id,
+        provenance: { verificationStatus: "needs-review" },
+      },
       locale: SEED_COUNTRIES[0].defaultLocale,
       status: "published",
     });
@@ -275,6 +286,7 @@ async function seedGuide(strapi: Core.Strapi): Promise<void> {
       estimatedTotalTime: SEED_GUIDE.estimatedTotalTime,
       country: defaultCountry.id,
       steps,
+      provenance: { verificationStatus: "needs-review" },
     },
     locale: SEED_COUNTRIES[0].defaultLocale,
     // Draft on purpose — see SEED_GUIDE.

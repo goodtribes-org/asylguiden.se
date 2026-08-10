@@ -50,7 +50,9 @@
     "featuredImage": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"],
+      "allowedTypes": [
+        "images"
+      ],
       "pluginOptions": {
         "i18n": {
           "localized": false
@@ -86,7 +88,11 @@
     },
     "difficulty": {
       "type": "enumeration",
-      "enum": ["beginner", "intermediate", "advanced"],
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
       "default": "beginner",
       "pluginOptions": {
         "i18n": {
@@ -132,6 +138,16 @@
       "type": "component",
       "repeatable": false,
       "component": "shared.seo"
+    },
+    "provenance": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.provenance",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
     }
   }
 }

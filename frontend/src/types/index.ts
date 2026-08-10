@@ -67,6 +67,7 @@ export interface Authority {
   languagesSupported?: string[];
   bookingRequired?: boolean;
   offices?: Office[];
+  provenance?: Provenance;
   locale: string;
   createdAt: string;
   updatedAt: string;
@@ -84,10 +85,28 @@ export interface Concept {
   whyYouNeedIt?: BlockNode[];
   aliases?: string[];
   relatedConcepts?: Concept[];
+  provenance?: Provenance;
   locale: string;
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
+}
+
+export type VerificationStatus =
+  | "verified"
+  | "needs-review"
+  | "community"
+  | "machine-draft";
+
+export interface Provenance {
+  id: number;
+  sourceAuthority?: Authority;
+  sourceUrl?: string;
+  /** When a HUMAN last checked this. Never written by an automated job. */
+  lastVerifiedAt?: string;
+  verifiedBy?: string;
+  verificationStatus: VerificationStatus;
+  legalDisclaimer?: string;
 }
 
 export interface RequiredDocument {
@@ -123,6 +142,7 @@ export interface Guide {
   steps?: GuideStep[];
   prerequisites?: Guide[];
   estimatedTotalTime?: string;
+  provenance?: Provenance;
   locale: string;
   createdAt: string;
   updatedAt: string;
@@ -147,6 +167,7 @@ export interface Article {
   sourceOrganization?: string;
   isFeatured?: boolean;
   seo?: SEO;
+  provenance?: Provenance;
   locale: string;
   createdAt: string;
   updatedAt: string;
