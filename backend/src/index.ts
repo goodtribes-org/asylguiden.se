@@ -180,6 +180,111 @@ async function seedConcepts(strapi: Core.Strapi): Promise<void> {
 }
 
 /**
+ * One complete example guide, so the shape is exercised end to end: several
+ * steps, two different authorities, required documents, a prerequisite link
+ * between steps, and a warning note.
+ *
+ * Seeded as a draft, for the same reason as the authorities: the procedural
+ * detail here has not been checked against Skatteverket's own guidance, and a
+ * wrong instruction about a permit process costs the reader more than a missing
+ * one. The warning note is deliberately advice-to-verify rather than a
+ * procedural claim.
+ */
+const SEED_GUIDE = {
+  slug: "skaffa-personnummer",
+  title: "Skaffa personnummer",
+  summary:
+    "Vad du behöver göra för att bli folkbokförd i Sverige och få ett personnummer.",
+  estimatedTotalTime: "4–12 veckor",
+  steps: [
+    {
+      key: "kontrollera-krav",
+      title: "Kontrollera att du uppfyller kraven",
+      authoritySlug: "skatteverket",
+      estimatedTime: "1 dag",
+      cost: "Gratis",
+      warningNote:
+        "Kraven ändras ibland. Kontrollera alltid aktuell information hos Skatteverket innan du bokar besök.",
+    },
+    {
+      key: "samla-dokument",
+      title: "Samla ihop dina dokument",
+      authoritySlug: "migrationsverket",
+      estimatedTime: "1–2 veckor",
+      cost: "Gratis",
+      prerequisiteSteps: ["kontrollera-krav"],
+      requiredDocuments: [
+        { label: "Pass eller annan identitetshandling", whereToGetIt: "Ditt hemlands myndighet eller ambassad" },
+        { label: "Uppehållstillståndskort", whereToGetIt: "Migrationsverket" },
+      ],
+    },
+    {
+      key: "boka-besok",
+      title: "Boka och gå på besök hos Skatteverket",
+      authoritySlug: "skatteverket",
+      estimatedTime: "2–4 veckor",
+      cost: "Gratis",
+      prerequisiteSteps: ["samla-dokument"],
+    },
+    {
+      key: "vanta-beslut",
+      title: "Vänta på beslut",
+      authoritySlug: "skatteverket",
+      estimatedTime: "2–8 veckor",
+      cost: "Gratis",
+      prerequisiteSteps: ["boka-besok"],
+    },
+  ],
+};
+
+/**
+ * Create the example guide if it does not exist. Idempotent on `slug`.
+ */
+async function seedGuide(strapi: Core.Strapi): Promise<void> {
+  const existing = await strapi.db
+    .query("api::guide.guide")
+    .findOne({ where: { slug: SEED_GUIDE.slug }, select: ["id"] });
+
+  if (existing) {
+    return;
+  }
+
+  const defaultCountry = await strapi.db
+    .query("api::country.country")
+    .findOne({ where: { code: SEED_COUNTRIES[0].code }, select: ["id"] });
+
+  if (!defaultCountry) {
+    strapi.log.warn("[seed] default country missing, skipping guide seed");
+    return;
+  }
+
+  const steps = [];
+  for (const { authoritySlug, ...step } of SEED_GUIDE.steps) {
+    const authority = await strapi.db
+      .query("api::authority.authority")
+      .findOne({ where: { slug: authoritySlug }, select: ["id"] });
+
+    steps.push({ ...step, authority: authority ? authority.id : null });
+  }
+
+  await strapi.documents("api::guide.guide").create({
+    data: {
+      slug: SEED_GUIDE.slug,
+      title: SEED_GUIDE.title,
+      summary: SEED_GUIDE.summary,
+      estimatedTotalTime: SEED_GUIDE.estimatedTotalTime,
+      country: defaultCountry.id,
+      steps,
+    },
+    locale: SEED_COUNTRIES[0].defaultLocale,
+    // Draft on purpose — see SEED_GUIDE.
+    status: "draft",
+  });
+
+  strapi.log.info(`[seed] created guide ${SEED_GUIDE.slug} (draft, ${steps.length} steps)`);
+}
+
+/**
  * Give every article without a country the default one.
  *
  * This lives in bootstrap() rather than in database/migrations/ on purpose:
@@ -244,6 +349,7 @@ export default {
       await seedCountries(strapi);
       await seedAuthorities(strapi);
       await seedConcepts(strapi);
+      await seedGuide(strapi);
       await backfillArticleCountry(strapi);
     } catch (err) {
       strapi.log.error("[bootstrap] country seed/backfill failed", err);

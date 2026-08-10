@@ -1,5 +1,5 @@
 import qs from "qs";
-import type { Article, Category, Tag, FAQ, Homepage, Concept, StrapiResponse } from "@/types";
+import type { Article, Category, Tag, FAQ, Homepage, Concept, Guide, StrapiResponse } from "@/types";
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
@@ -190,4 +190,77 @@ export async function getConceptBySlug(locale: string, slug: string) {
   );
 
   return response.data?.[0] ?? null;
+}
+
+// Guides
+//
+// Strapi does not populate nested relations by default, and `populate=*` only
+// goes one level — so `steps -> authority -> offices` has to be spelled out.
+// Two configurations on purpose: list views should not pay for authority and
+// document data they never render.
+const GUIDE_LIST_POPULATE = {
+  country: { fields: ["code", "name"] },
+  category: { fields: ["name", "slug"] },
+};
+
+const GUIDE_DETAIL_POPULATE = {
+  country: { fields: ["code", "name"] },
+  category: { fields: ["name", "slug"] },
+  prerequisites: { fields: ["title", "slug", "summary"] },
+  steps: {
+    populate: {
+      authority: {
+        fields: ["name", "slug", "website", "phone", "interpreterAvailable"],
+        populate: { offices: true },
+      },
+      requiredDocuments: true,
+    },
+  },
+};
+
+export async function getGuides(
+  locale: string,
+  params: { page?: number; pageSize?: number; country?: string; category?: string } = {}
+) {
+  const filters: Record<string, unknown> = {};
+  if (params.country) {
+    filters.country = { code: { $eq: params.country } };
+  }
+  if (params.category) {
+    filters.category = { slug: { $eq: params.category } };
+  }
+
+  return fetchStrapi<Guide[]>(
+    "/guides",
+    {
+      locale,
+      filters,
+      populate: GUIDE_LIST_POPULATE,
+      pagination: { page: params.page || 1, pageSize: params.pageSize || 12 },
+    },
+    { tags: ["guides"] }
+  );
+}
+
+export async function getGuideBySlug(locale: string, slug: string) {
+  const response = await fetchStrapi<Guide[]>(
+    "/guides",
+    { locale, filters: { slug: { $eq: slug } }, populate: GUIDE_DETAIL_POPULATE },
+    { tags: ["guides"] }
+  );
+
+  return response.data?.[0] ?? null;
+}
+
+/** Guides whose steps pass through a given authority (#9 criterion 3). */
+export async function getGuidesByAuthority(locale: string, authoritySlug: string) {
+  return fetchStrapi<Guide[]>(
+    "/guides",
+    {
+      locale,
+      filters: { steps: { authority: { slug: { $eq: authoritySlug } } } },
+      populate: GUIDE_LIST_POPULATE,
+    },
+    { tags: ["guides"] }
+  );
 }

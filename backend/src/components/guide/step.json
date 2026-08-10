@@ -1,0 +1,99 @@
+{
+  "collectionName": "components_guide_steps",
+  "info": {
+    "displayName": "Step",
+    "description": "One ordered step on a guide's path",
+    "icon": "bulletList"
+  },
+  "attributes": {
+    "key": {
+      "type": "string",
+      "required": true,
+      "description": "Stable identifier for this step within its guide. Referenced by prerequisiteSteps. Order comes from the component array, not from a number field.",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "description": {
+      "type": "blocks",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "authority": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::authority.authority",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "requiredDocuments": {
+      "type": "component",
+      "repeatable": true,
+      "component": "guide.required-document",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "prerequisiteSteps": {
+      "type": "json",
+      "description": "List of `key` values from other steps in this guide that must be done first.",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "estimatedTime": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "cost": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "actionUrl": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "warningNote": {
+      "type": "text",
+      "description": "\"Do not do X before Y.\" Getting this wrong can cost someone a right or a deadline — hold it to the same sourcing standard as authority contact details.",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

@@ -90,6 +90,45 @@ export interface Concept {
   publishedAt: string;
 }
 
+export interface RequiredDocument {
+  id: number;
+  label: string;
+  description?: string;
+  whereToGetIt?: string;
+}
+
+export interface GuideStep {
+  id: number;
+  key: string;
+  title: string;
+  description?: BlockNode[];
+  authority?: Authority;
+  requiredDocuments?: RequiredDocument[];
+  /** `key` values of steps in the same guide that must be done first. */
+  prerequisiteSteps?: string[];
+  estimatedTime?: string;
+  cost?: string;
+  actionUrl?: string;
+  warningNote?: string;
+}
+
+export interface Guide {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  summary: string;
+  country?: Country;
+  category?: Category;
+  steps?: GuideStep[];
+  prerequisites?: Guide[];
+  estimatedTotalTime?: string;
+  locale: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
 export interface Article {
   id: number;
   documentId: string;
