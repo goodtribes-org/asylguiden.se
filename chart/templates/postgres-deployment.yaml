@@ -44,7 +44,7 @@ spec:
               command:
                 - pg_isready
                 - -U
-                - {{ .Values.secret.POSTGRES_USER | default "asylguiden" }}
+                - {{ (.Values.secret).POSTGRES_USER | default "asylguiden" }}
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
@@ -52,7 +52,7 @@ spec:
               command:
                 - pg_isready
                 - -U
-                - {{ .Values.secret.POSTGRES_USER | default "asylguiden" }}
+                - {{ (.Values.secret).POSTGRES_USER | default "asylguiden" }}
             initialDelaySeconds: 15
             periodSeconds: 20
       volumes:
