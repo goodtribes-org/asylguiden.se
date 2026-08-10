@@ -43,6 +43,64 @@ async function seedCountries(strapi: Core.Strapi): Promise<void> {
 }
 
 /**
+ * Swedish authorities that recur across guides.
+ *
+ * `phone` is deliberately absent. Contact details are the content where a
+ * mistake costs someone the most, and an unverified number seeded here would
+ * look exactly as authoritative as a checked one. Numbers are added by an
+ * editor against the authority's own site.
+ *
+ * For the same reason these are created as drafts: nothing seeded here is
+ * publicly visible until a human publishes it.
+ */
+const SEED_AUTHORITIES = [
+  { slug: "migrationsverket", name: "Migrationsverket", type: "government", website: "https://www.migrationsverket.se" },
+  { slug: "skatteverket", name: "Skatteverket", type: "government", website: "https://www.skatteverket.se" },
+  { slug: "forsakringskassan", name: "Försäkringskassan", type: "government", website: "https://www.forsakringskassan.se" },
+  { slug: "arbetsformedlingen", name: "Arbetsförmedlingen", type: "government", website: "https://arbetsformedlingen.se" },
+  { slug: "kronofogden", name: "Kronofogden", type: "government", website: "https://www.kronofogden.se" },
+  { slug: "1177", name: "1177 Vårdguiden", type: "healthcare", website: "https://www.1177.se" },
+];
+
+/**
+ * Create any seed authority that does not already exist, linked to the default
+ * country.
+ *
+ * Idempotent: matched on `slug` via the query engine, which — unlike the
+ * document service — is locale-agnostic and so finds the row whichever locale
+ * it was written in.
+ */
+async function seedAuthorities(strapi: Core.Strapi): Promise<void> {
+  const defaultCountry = await strapi.db
+    .query("api::country.country")
+    .findOne({ where: { code: SEED_COUNTRIES[0].code }, select: ["id"] });
+
+  if (!defaultCountry) {
+    strapi.log.warn("[seed] default country missing, skipping authority seed");
+    return;
+  }
+
+  for (const seed of SEED_AUTHORITIES) {
+    const existing = await strapi.db
+      .query("api::authority.authority")
+      .findOne({ where: { slug: seed.slug }, select: ["id"] });
+
+    if (existing) {
+      continue;
+    }
+
+    await strapi.documents("api::authority.authority").create({
+      data: { ...seed, country: defaultCountry.id },
+      locale: SEED_COUNTRIES[0].defaultLocale,
+      // Draft on purpose — see SEED_AUTHORITIES.
+      status: "draft",
+    });
+
+    strapi.log.info(`[seed] created authority ${seed.slug} (draft)`);
+  }
+}
+
+/**
  * Give every article without a country the default one.
  *
  * This lives in bootstrap() rather than in database/migrations/ on purpose:
@@ -105,6 +163,7 @@ export default {
     // missing seed row that can be added by hand.
     try {
       await seedCountries(strapi);
+      await seedAuthorities(strapi);
       await backfillArticleCountry(strapi);
     } catch (err) {
       strapi.log.error("[bootstrap] country seed/backfill failed", err);
