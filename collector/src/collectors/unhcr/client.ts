@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { withRetry } from '../../utils/retry';
+import type { CountryConfig } from '../../countries';
 
 const BASE_URL = 'https://api.unhcr.org/population/v1';
 
@@ -37,36 +38,42 @@ export interface UnhcrAsylumEntry {
 }
 
 /**
- * Fetch asylum applications to Sweden for the most recent available year.
- * UNHCR API: GET /asylum-seekers/?coa=SWE&year=<year>&limit=50
+ * Fetch asylum applications to a country for the most recent available year.
+ * UNHCR API: GET /asylum-seekers/?coa=<iso3>&year=<year>&limit=50
  */
-export async function fetchAsylumSeekersToSweden(year: number): Promise<UnhcrAsylumEntry[]> {
+export async function fetchAsylumSeekers(
+  country: CountryConfig,
+  year: number,
+): Promise<UnhcrAsylumEntry[]> {
   return withRetry(async () => {
     const response = await client.get<UnhcrAsylumSeekersResponse>('/asylum-seekers/', {
       params: {
-        coa: 'SWE',
+        coa: country.iso3,
         year,
         limit: 50,
         cf_type: 'ISO',
       },
     });
     return response.data.items ?? [];
-  }, `UNHCR asylum-seekers ${year}`);
+  }, `UNHCR asylum-seekers ${country.code} ${year}`);
 }
 
 /**
- * Fetch asylum decisions for Sweden for the most recent available year.
+ * Fetch asylum decisions for a country for the most recent available year.
  */
-export async function fetchAsylumDecisionsForSweden(year: number): Promise<UnhcrAsylumEntry[]> {
+export async function fetchAsylumDecisions(
+  country: CountryConfig,
+  year: number,
+): Promise<UnhcrAsylumEntry[]> {
   return withRetry(async () => {
     const response = await client.get<UnhcrAsylumSeekersResponse>('/asylum-decisions/', {
       params: {
-        coa: 'SWE',
+        coa: country.iso3,
         year,
         limit: 50,
         cf_type: 'ISO',
       },
     });
     return response.data.items ?? [];
-  }, `UNHCR asylum-decisions ${year}`);
+  }, `UNHCR asylum-decisions ${country.code} ${year}`);
 }

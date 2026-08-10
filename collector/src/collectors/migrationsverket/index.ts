@@ -3,6 +3,7 @@ import { upsertArticle } from '../../strapi/upsert';
 import { scrapeProcessingTimes, downloadMonthlyExcel } from './scraper';
 import { parseMonthlyExcel } from './excel';
 import { transformProcessingTimes, transformMonthlyStats } from './transform';
+import { COUNTRIES } from '../../countries';
 
 /**
  * Run processing times scraper. Called every Monday at 07:00.
@@ -17,7 +18,7 @@ export async function runProcessingTimesScraper(): Promise<void> {
   );
 
   const payload = transformProcessingTimes(result);
-  await upsertArticle(payload);
+  await upsertArticle(payload, COUNTRIES.se);
   logger.info('Migrationsverket processing times article upserted');
 }
 
@@ -38,7 +39,7 @@ export async function runMonthlyExcelCollector(): Promise<void> {
   );
 
   const payload = transformMonthlyStats(excelResult, pageUrl);
-  await upsertArticle(payload);
+  await upsertArticle(payload, COUNTRIES.se);
   logger.info({ period: excelResult.period }, 'Migrationsverket stats draft created');
 }
 

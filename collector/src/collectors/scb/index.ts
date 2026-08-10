@@ -2,6 +2,7 @@ import { logger } from '../../logger';
 import { upsertArticle } from '../../strapi/upsert';
 import { fetchForeignBornEmployment } from './client';
 import { transformScbData } from './transform';
+import { COUNTRIES } from '../../countries';
 
 /**
  * SCB AKU data is published quarterly. On the 1st of each month we look at the
@@ -43,6 +44,6 @@ export async function runScb(): Promise<void> {
   }
 
   const payload = transformScbData(period, data);
-  await upsertArticle(payload);
+  await upsertArticle(payload, COUNTRIES.se);
   logger.info({ period }, 'SCB article upserted');
 }

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { withRetry } from '../../utils/retry';
+import type { CountryConfig } from '../../countries';
 
 const BASE_URL = 'https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data';
 
@@ -32,12 +33,13 @@ export interface EurostatDimension {
  * Filtered to Sweden as destination, most recent year.
  */
 export async function fetchEurostatAsylumApplications(
+  country: CountryConfig,
   year: string,
 ): Promise<EurostatResponse> {
   return withRetry(async () => {
     const response = await client.get<EurostatResponse>('/migr_asyappctza', {
       params: {
-        geo: 'SE',
+        geo: country.eurostatGeo,
         time: year,
         citizen: 'TOTAL',
         asyl_app: 'ASY_APP',
@@ -48,18 +50,21 @@ export async function fetchEurostatAsylumApplications(
       },
     });
     return response.data;
-  }, `Eurostat asylum applications ${year}`);
+  }, `Eurostat asylum applications ${country.code} ${year}`);
 }
 
 /**
  * Fetch EU asylum decisions dataset (migr_asydcfsta).
  * Filtered to Sweden as destination, most recent year.
  */
-export async function fetchEurostatAsylumDecisions(year: string): Promise<EurostatResponse> {
+export async function fetchEurostatAsylumDecisions(
+  country: CountryConfig,
+  year: string,
+): Promise<EurostatResponse> {
   return withRetry(async () => {
     const response = await client.get<EurostatResponse>('/migr_asydcfsta', {
       params: {
-        geo: 'SE',
+        geo: country.eurostatGeo,
         time: year,
         citizen: 'TOTAL',
         decision: 'TOTAL',
@@ -70,5 +75,5 @@ export async function fetchEurostatAsylumDecisions(year: string): Promise<Eurost
       },
     });
     return response.data;
-  }, `Eurostat asylum decisions ${year}`);
+  }, `Eurostat asylum decisions ${country.code} ${year}`);
 }
