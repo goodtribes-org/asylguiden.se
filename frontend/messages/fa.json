@@ -1,0 +1,97 @@
+{
+  "common": {
+    "siteName": "[TODO] Asylguiden",
+    "siteDescription": "[TODO] Information och vägledning för asylsökande i Sverige",
+    "home": "[TODO] Hem",
+    "articles": "[TODO] Artiklar",
+    "categories": "[TODO] Kategorier",
+    "search": "[TODO] Sök",
+    "login": "[TODO] Logga in",
+    "register": "[TODO] Registrera",
+    "logout": "[TODO] Logga ut",
+    "profile": "[TODO] Profil",
+    "bookmarks": "[TODO] Bokmärken",
+    "language": "[TODO] Språk",
+    "readMore": "[TODO] Läs mer",
+    "backToHome": "[TODO] Tillbaka till startsidan",
+    "loading": "[TODO] Laddar...",
+    "error": "[TODO] Något gick fel",
+    "noResults": "[TODO] Inga resultat hittades",
+    "minuteRead": "[TODO] {count} min läsning",
+    "showAll": "[TODO] Visa alla"
+  },
+  "home": {
+    "heroTitle": "[TODO] Välkommen till Asylguiden",
+    "heroSubtitle": "[TODO] Din guide till information om asylprocessen, rättigheter och vardagsliv i Sverige",
+    "searchPlaceholder": "[TODO] Sök efter information...",
+    "featuredGuides": "[TODO] Utvalda guider",
+    "allCategories": "[TODO] Alla kategorier",
+    "emergencyInfo": "[TODO] Viktig information"
+  },
+  "article": {
+    "relatedArticles": "[TODO] Relaterade artiklar",
+    "source": "[TODO] Källa",
+    "lastUpdated": "[TODO] Senast uppdaterad",
+    "difficulty": "[TODO] Svårighetsgrad",
+    "beginner": "[TODO] Nybörjare",
+    "intermediate": "[TODO] Medel",
+    "advanced": "[TODO] Avancerad",
+    "bookmark": "[TODO] Spara",
+    "bookmarked": "[TODO] Sparad",
+    "shareArticle": "[TODO] Dela artikel"
+  },
+  "category": {
+    "articlesInCategory": "[TODO] Artiklar i {category}",
+    "noArticles": "[TODO] Inga artiklar i denna kategori ännu"
+  },
+  "search": {
+    "title": "[TODO] Sökresultat",
+    "placeholder": "[TODO] Sök efter artiklar, guider och information...",
+    "resultsFor": "[TODO] Resultat för \"{query}\"",
+    "noResults": "[TODO] Inga resultat för \"{query}\"",
+    "tryDifferent": "[TODO] Försök med andra sökord",
+    "filterByCategory": "[TODO] Filtrera efter kategori",
+    "allCategories": "[TODO] Alla kategorier"
+  },
+  "auth": {
+    "loginTitle": "[TODO] Logga in",
+    "registerTitle": "[TODO] Skapa konto",
+    "email": "[TODO] E-post",
+    "password": "[TODO] Lösenord",
+    "confirmPassword": "[TODO] Bekräfta lösenord",
+    "name": "[TODO] Namn",
+    "loginButton": "[TODO] Logga in",
+    "registerButton": "[TODO] Skapa konto",
+    "noAccount": "[TODO] Har du inget konto?",
+    "hasAccount": "[TODO] Har du redan ett konto?",
+    "orContinueWith": "[TODO] Eller fortsätt med",
+    "invalidCredentials": "[TODO] Felaktig e-post eller lösenord",
+    "passwordMismatch": "[TODO] Lösenorden matchar inte",
+    "emailRequired": "[TODO] E-post krävs",
+    "passwordRequired": "[TODO] Lösenord krävs",
+    "passwordMinLength": "[TODO] Lösenordet måste vara minst 8 tecken"
+  },
+  "bookmarks": {
+    "title": "[TODO] Mina bokmärken",
+    "empty": "[TODO] Du har inga sparade artiklar ännu",
+    "emptyDescription": "[TODO] Klicka på bokmärkesikonen på en artikel för att spara den här",
+    "loginRequired": "[TODO] Du måste vara inloggad för att spara bokmärken"
+  },
+  "profile": {
+    "title": "[TODO] Min profil",
+    "preferredLanguage": "[TODO] Föredraget språk",
+    "savedArticles": "[TODO] Sparade artiklar"
+  },
+  "footer": {
+    "disclaimer": "[TODO] Asylguiden är en informationstjänst och ersätter inte juridisk rådgivning. Kontakta alltid Migrationsverket eller en juridisk rådgivare för ditt specifika ärende.",
+    "usefulLinks": "[TODO] Användbara länkar",
+    "migrationsverket": "[TODO] Migrationsverket",
+    "socialStyrelsen": "[TODO] Socialstyrelsen",
+    "arbetsformedlingen": "[TODO] Arbetsförmedlingen",
+    "skatteverket": "[TODO] Skatteverket",
+    "aboutUs": "[TODO] Om oss",
+    "contact": "[TODO] Kontakt",
+    "privacyPolicy": "[TODO] Integritetspolicy",
+    "copyright": "[TODO] © {year} Asylguiden. All information samlas från offentliga källor."
+  }
+}
