@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { withRetry } from '../../utils/retry';
+import { ScrapeError } from '../../utils/errors';
 
 const BASE_URL = 'https://www.migrationsverket.se';
 
@@ -105,6 +106,16 @@ export async function scrapeProcessingTimes(): Promise<ProcessingTimesResult> {
           });
         }
       });
+    }
+
+    // HTTP 200 with nothing parsed means the page structure changed, not that
+    // Migrationsverket has no processing times. Writing an empty article here
+    // would replace real figures with nothing and look like a successful run.
+    if (entries.length === 0) {
+      throw new ScrapeError(
+        'Migrationsverket processing times: no entries parsed from a 200 response',
+        { pageUrl, htmlLength: response.data.length, tablesFound: $('table').length, listsFound: $('dl').length },
+      );
     }
 
     return {

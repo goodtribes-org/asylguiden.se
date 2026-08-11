@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { withRetry } from '../../utils/retry';
 import type { CountryConfig } from '../../countries';
+import { eurostatResponseSchema } from './schema';
+
+import type { EurostatResponse } from './schema';
+export type { EurostatDimension, EurostatResponse } from './schema';
 
 const BASE_URL = 'https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data';
 
@@ -11,22 +15,7 @@ const client = axios.create({
 });
 
 // Eurostat JSON-stat2 format
-export interface EurostatResponse {
-  id: string[];
-  size: number[];
-  dimension: Record<string, EurostatDimension>;
-  value: Record<string, number | null>;
-  label?: string;
-  updated?: string;
-}
 
-export interface EurostatDimension {
-  label: string;
-  category: {
-    index: Record<string, number>;
-    label: Record<string, string>;
-  };
-}
 
 /**
  * Fetch EU asylum applications dataset (migr_asyappctza).
@@ -37,7 +26,7 @@ export async function fetchEurostatAsylumApplications(
   year: string,
 ): Promise<EurostatResponse> {
   return withRetry(async () => {
-    const response = await client.get<EurostatResponse>('/migr_asyappctza', {
+    const response = await client.get('/migr_asyappctza', {
       params: {
         geo: country.eurostatGeo,
         time: year,
@@ -49,7 +38,7 @@ export async function fetchEurostatAsylumApplications(
         lang: 'EN',
       },
     });
-    return response.data;
+    return eurostatResponseSchema.parse(response.data);
   }, `Eurostat asylum applications ${country.code} ${year}`);
 }
 
@@ -62,7 +51,7 @@ export async function fetchEurostatAsylumDecisions(
   year: string,
 ): Promise<EurostatResponse> {
   return withRetry(async () => {
-    const response = await client.get<EurostatResponse>('/migr_asydcfsta', {
+    const response = await client.get('/migr_asydcfsta', {
       params: {
         geo: country.eurostatGeo,
         time: year,
@@ -74,6 +63,6 @@ export async function fetchEurostatAsylumDecisions(
         lang: 'EN',
       },
     });
-    return response.data;
+    return eurostatResponseSchema.parse(response.data);
   }, `Eurostat asylum decisions ${country.code} ${year}`);
 }

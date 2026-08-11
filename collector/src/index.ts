@@ -1,4 +1,6 @@
 import cron from 'node-cron';
+import { ZodError } from 'zod';
+import { ScrapeError } from './utils/errors';
 import { logger } from './logger';
 import { runUnhcr } from './collectors/unhcr';
 import { runEurostat } from './collectors/eurostat';
@@ -9,6 +11,23 @@ import {
 } from './collectors/migrationsverket';
 import { runFrontex } from './collectors/frontex';
 import { COUNTRIES, DEFAULT_COUNTRY, getCountry, type CountryConfig } from './countries';
+
+/**
+ * Structured detail for a failed collector.
+ *
+ * A validation failure logged as `err.message` alone is nearly useless — Zod's
+ * `issues` say which field changed shape and where, which is the difference
+ * between "UNHCR broke" and "UNHCR renamed asylum_seekers".
+ */
+function failureDetail(err: unknown): Record<string, unknown> {
+  if (err instanceof ZodError) {
+    return { kind: 'validation', issues: err.issues };
+  }
+  if (err instanceof ScrapeError) {
+    return { kind: 'scrape', message: err.message, context: err.context };
+  }
+  return { kind: 'error', err };
+}
 
 /**
  * Sources that take a country code and work for any country.
@@ -133,7 +152,10 @@ async function runAll(countryCode: string): Promise<void> {
       await fn();
       logger.info({ collector: name, country: country.code }, 'Collector finished');
     } catch (err) {
-      logger.error({ collector: name, country: country.code, err }, 'Collector failed');
+      logger.error(
+        { collector: name, country: country.code, ...failureDetail(err) },
+        'Collector failed',
+      );
     }
   }
 
@@ -145,7 +167,7 @@ if (ONCE_MODE) {
   run
     .then(() => process.exit(0))
     .catch((err) => {
-      logger.error(err, 'Fatal error');
+      logger.error(failureDetail(err), 'Fatal error');
       process.exit(1);
     });
 } else {
@@ -177,7 +199,9 @@ if (ONCE_MODE) {
     }
 
     cron.schedule(schedule, () => {
-      fn().catch((err) => logger.error({ collector: name, err }, 'Collector failed'));
+      fn().catch((err) =>
+        logger.error({ collector: name, ...failureDetail(err) }, 'Collector failed'),
+      );
     });
   }
 
