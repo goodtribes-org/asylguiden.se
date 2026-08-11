@@ -1,4 +1,5 @@
 import ExcelJS from 'exceljs';
+import { ScrapeError } from '../../utils/errors';
 
 export interface ExcelStatRow {
   label: string;
@@ -57,6 +58,15 @@ export async function parseMonthlyExcel(
   // Try to extract period from filename (e.g., "Statistik-2025-11.xlsx" → "2025-11")
   const periodMatch = filename.match(/(\d{4}-\d{2})/);
   const period = periodMatch ? periodMatch[1] : new Date().toISOString().slice(0, 7);
+
+  // A workbook that parsed to zero sections is a format change, not a month
+  // with no statistics.
+  if (sections.length === 0) {
+    throw new ScrapeError(
+      'Migrationsverket Excel: no sections parsed from the workbook',
+      { period, sheetCount: workbook.worksheets.length },
+    );
+  }
 
   return { period, sections };
 }

@@ -1,4 +1,8 @@
 import axios from 'axios';
+import { scbResponseSchema, scbTableMetadataSchema } from './schema';
+
+import type { ScbResponse, ScbTableMetadata } from './schema';
+export type { ScbResponse, ScbTableMetadata } from './schema';
 import { withRetry } from '../../utils/retry';
 import { scbRateLimiter } from '../../utils/rate-limiter';
 
@@ -11,22 +15,8 @@ const client = axios.create({
 });
 
 // SCB PxWebApi JSON response format
-export interface ScbResponse {
-  columns: Array<{ code: string; text: string; type: string }>;
-  comments: string[];
-  data: Array<{ key: string[]; values: string[] }>;
-}
 
 // SCB PxWebApi table metadata
-export interface ScbTableMetadata {
-  title: string;
-  variables: Array<{
-    code: string;
-    text: string;
-    values: string[];
-    valueTexts: string[];
-  }>;
-}
 
 /**
  * Fetch metadata for a PxWebApi table.
@@ -34,8 +24,8 @@ export interface ScbTableMetadata {
 export async function fetchScbTableMeta(tablePath: string): Promise<ScbTableMetadata> {
   await scbRateLimiter.acquire();
   return withRetry(async () => {
-    const response = await client.get<ScbTableMetadata>(tablePath);
-    return response.data;
+    const response = await client.get(tablePath);
+    return scbTableMetadataSchema.parse(response.data);
   }, `SCB meta ${tablePath}`);
 }
 
@@ -48,8 +38,8 @@ export async function queryScbTable(
 ): Promise<ScbResponse> {
   await scbRateLimiter.acquire();
   return withRetry(async () => {
-    const response = await client.post<ScbResponse>(tablePath, query);
-    return response.data;
+    const response = await client.post(tablePath, query);
+    return scbResponseSchema.parse(response.data);
   }, `SCB query ${tablePath}`);
 }
 
