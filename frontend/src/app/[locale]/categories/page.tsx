@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import Link from "next/link";
-import { getCategories } from "@/lib/strapi";
+import { getLifeAreas } from "@/lib/strapi";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 type Props = {
@@ -14,7 +14,7 @@ export default async function CategoriesPage({ params }: Props) {
 
   let categories;
   try {
-    categories = await getCategories(locale);
+    categories = await getLifeAreas(locale);
   } catch {
     categories = { data: [], meta: { pagination: undefined } };
   }
@@ -27,7 +27,7 @@ function CategoriesContent({
   categories,
 }: {
   locale: string;
-  categories: Awaited<ReturnType<typeof getCategories>>["data"];
+  categories: Awaited<ReturnType<typeof getLifeAreas>>["data"];
 }) {
   const t = useTranslations();
 
@@ -46,21 +46,37 @@ function CategoriesContent({
       {categories.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories.map((category) => (
-            <Link
+            <div
               key={category.id}
-              href={`/${locale}/categories/${category.slug}`}
-              className="block rounded-lg border border-gray-200 bg-white p-8 hover:shadow-lg transition-shadow group"
+              className="rounded-lg border border-gray-200 bg-white p-8 hover:shadow-lg transition-shadow"
             >
-              {category.icon && (
-                <span className="text-4xl mb-3 block">{category.icon}</span>
+              <Link href={`/${locale}/categories/${category.slug}`} className="group block">
+                {category.icon && (
+                  <span className="text-4xl mb-3 block">{category.icon}</span>
+                )}
+                <h2 className="text-xl font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">
+                  {category.name}
+                </h2>
+                {category.description && (
+                  <p className="mt-2 text-gray-600">{category.description}</p>
+                )}
+              </Link>
+
+              {category.children && category.children.length > 0 && (
+                <ul className="mt-4 space-y-1 border-t border-gray-100 pt-4">
+                  {category.children.map((child) => (
+                    <li key={child.id}>
+                      <Link
+                        href={`/${locale}/categories/${child.slug}`}
+                        className="text-sm text-gray-600 hover:text-primary-600 transition-colors"
+                      >
+                        {child.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               )}
-              <h2 className="text-xl font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">
-                {category.name}
-              </h2>
-              {category.description && (
-                <p className="mt-2 text-gray-600">{category.description}</p>
-              )}
-            </Link>
+            </div>
           ))}
         </div>
       ) : (

@@ -185,6 +185,9 @@ export interface Category {
   featuredImage?: StrapiImage;
   articles?: Article[];
   sortOrder?: number;
+  /** Hierarchy is structural, not linguistic — the same on every locale. */
+  parent?: Category;
+  children?: Category[];
   locale: string;
 }
 

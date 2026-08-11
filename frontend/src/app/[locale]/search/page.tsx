@@ -1,7 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
 import { searchArticles } from "@/lib/meilisearch";
-import { getCategories } from "@/lib/strapi";
+import { getLifeAreas } from "@/lib/strapi";
 import { SearchBar } from "@/components/search/SearchBar";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import Link from "next/link";
@@ -21,7 +21,7 @@ export default async function SearchPage({ params, searchParams }: Props) {
   let categories;
 
   try {
-    categories = await getCategories(locale);
+    categories = await getLifeAreas(locale);
   } catch {
     categories = { data: [], meta: { pagination: undefined } };
   }
@@ -31,6 +31,9 @@ export default async function SearchPage({ params, searchParams }: Props) {
       searchResults = await searchArticles(q, {
         locale,
         category,
+        categoryChildren: categories.data
+          .find((c) => c.slug === category)
+          ?.children?.map((child) => child.slug),
         page: page ? parseInt(page) : 1,
         hitsPerPage: 10,
       });
@@ -63,7 +66,7 @@ function SearchContent({
   query: string;
   category?: string;
   searchResults: Awaited<ReturnType<typeof searchArticles>> | null;
-  categories: Awaited<ReturnType<typeof getCategories>>["data"];
+  categories: Awaited<ReturnType<typeof getLifeAreas>>["data"];
   currentPage: number;
 }) {
   const t = useTranslations();

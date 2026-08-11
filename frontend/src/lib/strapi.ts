@@ -105,10 +105,23 @@ export async function getCategories(locale: string) {
     locale,
     populate: {
       featuredImage: { fields: ["url", "alternativeText", "width", "height"] },
+      parent: { fields: ["name", "slug"] },
+      children: { fields: ["name", "slug", "icon", "color", "sortOrder"] },
     },
     sort: ["sortOrder:asc"],
     pagination: { pageSize: 100 },
   }, { tags: ["categories"] });
+}
+
+/**
+ * Life areas only — categories with no parent, each carrying its children.
+ *
+ * Derived from getCategories rather than a separate request so both views stay
+ * consistent and the response is already cached.
+ */
+export async function getLifeAreas(locale: string) {
+  const response = await getCategories(locale);
+  return { ...response, data: response.data.filter((c) => !c.parent) };
 }
 
 export async function getCategoryBySlug(locale: string, slug: string) {

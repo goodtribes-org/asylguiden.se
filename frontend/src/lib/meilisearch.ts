@@ -9,16 +9,25 @@ const client = new MeiliSearch({
 export interface SearchOptions {
   locale: string;
   category?: string;
+  /**
+   * Slugs of the selected category's children (#11). Selecting a life area
+   * must also return hits filed under its subcategories — otherwise picking a
+   * broader area returns fewer results than a narrower one, which reads as a
+   * bug.
+   */
+  categoryChildren?: string[];
   page?: number;
   hitsPerPage?: number;
 }
 
 export async function searchArticles(query: string, options: SearchOptions) {
-  const { locale, category, page = 1, hitsPerPage = 10 } = options;
+  const { locale, category, categoryChildren, page = 1, hitsPerPage = 10 } = options;
 
   const filter: string[] = [`locale = "${locale}"`];
   if (category) {
-    filter.push(`category = "${category}"`);
+    // A life area matches itself and everything filed beneath it.
+    const slugs = [category, ...(categoryChildren ?? [])];
+    filter.push(`(${slugs.map((s) => `category = "${s}"`).join(" OR ")})`);
   }
 
   const index = client.index("article");

@@ -191,6 +191,56 @@ async function seedConcepts(strapi: Core.Strapi): Promise<void> {
 }
 
 /**
+ * The eight life areas (#11).
+ *
+ * Users don't think in "article categories" — they think in situations: I need
+ * somewhere to live, my child is starting school. The taxonomy mirrors that,
+ * and it drives navigation, the search filter, and how the chat scopes its
+ * retrieval.
+ *
+ * Seeded only in the source locale. Other locales follow once they are
+ * registered in Strapi — i18n locales live in the database, not in this repo,
+ * and writing a name against an unregistered locale fails.
+ */
+const SEED_CATEGORIES = [
+  { slug: "boende", name: "Boende", icon: "home", color: "#2563eb", sortOrder: 1 },
+  { slug: "arbete-och-inkomst", name: "Arbete och inkomst", icon: "briefcase", color: "#0f766e", sortOrder: 2 },
+  { slug: "ekonomi-och-bank", name: "Ekonomi och bank", icon: "landmark", color: "#7c3aed", sortOrder: 3 },
+  { slug: "halsa-och-vard", name: "Hälsa och vård", icon: "heart-pulse", color: "#dc2626", sortOrder: 4 },
+  { slug: "skola-och-utbildning", name: "Skola och utbildning", icon: "graduation-cap", color: "#ea580c", sortOrder: 5 },
+  { slug: "juridik-och-rattigheter", name: "Juridik och rättigheter", icon: "scale", color: "#4338ca", sortOrder: 6 },
+  { slug: "vardagsliv-och-praktiskt", name: "Vardagsliv och praktiskt", icon: "shopping-basket", color: "#65a30d", sortOrder: 7 },
+  { slug: "sprak", name: "Språk", icon: "languages", color: "#0891b2", sortOrder: 8 },
+];
+
+/**
+ * Create any life area that does not already exist. Idempotent on `slug`.
+ *
+ * Deliberately additive: this does NOT rename, delete or re-point anything.
+ * Mapping the existing categories onto the new taxonomy (#11 criterion 3) is an
+ * editorial decision that needs a look at the real data — done blind it would
+ * silently strand articles whose category disappeared.
+ */
+async function seedCategories(strapi: Core.Strapi): Promise<void> {
+  for (const seed of SEED_CATEGORIES) {
+    const existing = await strapi.db
+      .query("api::category.category")
+      .findOne({ where: { slug: seed.slug }, select: ["id"] });
+
+    if (existing) {
+      continue;
+    }
+
+    await strapi.documents("api::category.category").create({
+      data: seed,
+      locale: SEED_COUNTRIES[0].defaultLocale,
+    });
+
+    strapi.log.info(`[seed] created category ${seed.slug}`);
+  }
+}
+
+/**
  * One complete example guide, so the shape is exercised end to end: several
  * steps, two different authorities, required documents, a prerequisite link
  * between steps, and a warning note.
@@ -360,6 +410,7 @@ export default {
     try {
       await seedCountries(strapi);
       await seedAuthorities(strapi);
+      await seedCategories(strapi);
       await seedConcepts(strapi);
       await seedGuide(strapi);
       await backfillArticleCountry(strapi);
