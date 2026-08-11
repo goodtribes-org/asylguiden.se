@@ -7,9 +7,13 @@ import { buildSyntheticSourceUrl } from '../../utils/slug';
 const SOURCE_ORG = 'Migrationsverket';
 
 export function transformProcessingTimes(result: ProcessingTimesResult): ArticlePayload {
-  const sourceUrl = buildSyntheticSourceUrl(result.pageUrl, {
-    scraped: result.scrapedAt.slice(0, 10),
-  });
+  // The key is the page itself, with no scrape date in it.
+  //
+  // `sourceUrl` is the dedup key, so including `?scraped=YYYY-MM-DD` made every
+  // run a brand-new article instead of an update — a fresh copy of the same page
+  // every week. Processing times are current-state data: one article, updated in
+  // place, with the freshness date carried as field content below.
+  const sourceUrl = result.pageUrl;
 
   const stats: Record<string, string> = {};
   for (const entry of result.entries) {
@@ -52,7 +56,9 @@ export function transformProcessingTimes(result: ProcessingTimesResult): Article
     `Uppdaterat ${new Date(result.scrapedAt).toLocaleDateString('sv-SE')}.`;
 
   return {
-    title: `Handläggningstider Migrationsverket – ${new Date(result.scrapedAt).toLocaleDateString('sv-SE')}`,
+    // No date in the title either: with a stable key the article is updated in
+    // place, and a date here would make the same article rename itself weekly.
+    title: 'Handläggningstider hos Migrationsverket',
     summary,
     content,
     sourceUrl,
