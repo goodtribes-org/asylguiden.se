@@ -7,10 +7,17 @@ import { useState, useRef, useEffect } from "react";
 import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
+// Endonyms — each language named in itself, not in Swedish.
+// Must stay in step with routing.locales: an entry missing here renders as
+// `undefined` in the switcher button.
 const localeNames: Record<string, string> = {
   sv: "Svenska",
   en: "English",
   ar: "العربية",
+  fa: "فارسی",
+  ti: "ትግርኛ",
+  so: "Soomaali",
+  uk: "Українська",
 };
 
 export function LanguageSwitcher() {
