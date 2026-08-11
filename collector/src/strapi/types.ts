@@ -54,6 +54,8 @@ export type StrapiBlock =
 // Strapi Article payload for create/update
 export interface ArticlePayload {
   title: string;
+  /** Derived from the title in upsertArticle when a transform omits it. */
+  slug?: string;
   summary: string;
   content: StrapiBlock[];
   sourceUrl: string;
