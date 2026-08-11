@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { withRetry } from '../../utils/retry';
 import { ScrapeError } from '../../utils/errors';
+import { USER_AGENT } from '../../utils/user-agent';
 
 const BASE_URL = 'https://www.migrationsverket.se';
 
@@ -9,8 +10,7 @@ const client = axios.create({
   baseURL: BASE_URL,
   timeout: 30_000,
   headers: {
-    'User-Agent':
-      'Mozilla/5.0 (compatible; asylguiden.se-collector/1.0; +https://asylguiden.se)',
+    'User-Agent': USER_AGENT,
     Accept: 'text/html,application/xhtml+xml',
     'Accept-Language': 'sv-SE,sv;q=0.9',
   },
