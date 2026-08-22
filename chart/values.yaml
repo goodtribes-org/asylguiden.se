@@ -19,11 +19,12 @@ frontend:
   # Supplied via envFrom: STRAPI_API_TOKEN, NEXTAUTH_SECRET.
   env:
     NEXT_PUBLIC_STRAPI_URL: http://asylguiden-backend:1337
-    NEXT_PUBLIC_MEILI_HOST: http://asylguiden-meilisearch:7700
-    # Not a secret despite the empty value: NEXT_PUBLIC_* is inlined into the
-    # browser bundle at build time, so a Meilisearch key here would be public by
-    # construction and a Secret entry would never reach the client anyway.
-    NEXT_PUBLIC_MEILI_SEARCH_KEY: ""
+    # Same Meilisearch address as before, under a plain (non-NEXT_PUBLIC_) name
+    # so it is read at runtime. NEXT_PUBLIC_* is inlined into the bundle at build
+    # time, so the old NEXT_PUBLIC_MEILI_HOST was frozen to whatever the Docker
+    # build saw — nothing — and this value never actually reached the code.
+    # Only the server reads it; searches run in /api/search.
+    MEILI_HOST: http://asylguiden-meilisearch:7700
     NEXTAUTH_URL: https://asylguiden.se
 
 backend:
