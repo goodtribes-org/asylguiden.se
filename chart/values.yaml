@@ -73,7 +73,13 @@ ingress:
   className: traefik
   annotations:
     cert-manager.io/cluster-issuer: http
-    acme.cert-manager.io/http01-edit-in-place: "true"
+    # Deliberately no acme.cert-manager.io/http01-edit-in-place. That annotation
+    # makes cert-manager inject the /.well-known/acme-challenge path into this
+    # Ingress, which ArgoCD (selfHeal + prune) reverts within seconds — the
+    # challenge then 404s forever and no certificate is ever issued. Without it
+    # cert-manager creates its own solver Ingress, which ArgoCD does not manage
+    # and will not prune. The `http` ClusterIssuer already configures that solver
+    # with ingressClassName traefik and the `web` entrypoint.
     kubernetes.io/ingress.class: traefik
     kubernetes.io/tls-acme: "true"
     traefik.ingress.kubernetes.io/router.entrypoints: websecure,web
