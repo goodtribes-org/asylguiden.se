@@ -10,7 +10,12 @@ frontend:
     port: 3000
   env:
     NEXT_PUBLIC_STRAPI_URL: http://asylguiden-backend:1337
-    STRAPI_API_TOKEN: ""
+    # STRAPI_API_TOKEN is deliberately absent. It arrives via envFrom on the
+    # asylguiden-secret, and an explicit env entry here would win over envFrom —
+    # so declaring it empty silently masked the real token and the frontend fell
+    # back to unauthenticated reads. Secrets live only in the cluster, never in
+    # this file: values.yaml is rendered into a manifest committed to the deploy
+    # repo, so any token set here would be published to git.
     NEXT_PUBLIC_MEILI_HOST: http://asylguiden-meilisearch:7700
     NEXT_PUBLIC_MEILI_SEARCH_KEY: ""
     NEXTAUTH_URL: https://asylguiden.se
