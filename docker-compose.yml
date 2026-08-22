@@ -48,6 +48,11 @@ services:
       ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET}
       TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT}
       JWT_SECRET: ${STRAPI_JWT_SECRET}
+      # config/admin.ts reads this for secrets.encryptionKey. Strapi passes it to
+      # aes-128-ecb, so it must decode to exactly 16 bytes:
+      #   openssl rand -base64 16
+      # A 32-byte key makes Strapi throw "Invalid key length" on boot.
+      ENCRYPTION_KEY: ${STRAPI_ENCRYPTION_KEY}
       DATABASE_CLIENT: postgres
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
