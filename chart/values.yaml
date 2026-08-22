@@ -8,18 +8,23 @@ frontend:
     pullPolicy: IfNotPresent
   service:
     port: 3000
+  # Non-secret configuration only. Every key listed here is rendered as an
+  # explicit `env` entry on the container, and an explicit `env` entry WINS over
+  # `envFrom` — so naming a secret here silently masks the real value in
+  # asylguiden-secret. Secrets are seeded by scripts/create-secrets.sh and reach
+  # the pod through envFrom alone. They must never appear in this file:
+  # values.yaml is rendered by `helm template` into a manifest committed to the
+  # goodtribes-org/deploy repo, so anything set here is published to git.
+  #
+  # Supplied via envFrom: STRAPI_API_TOKEN, NEXTAUTH_SECRET.
   env:
     NEXT_PUBLIC_STRAPI_URL: http://asylguiden-backend:1337
-    # STRAPI_API_TOKEN is deliberately absent. It arrives via envFrom on the
-    # asylguiden-secret, and an explicit env entry here would win over envFrom —
-    # so declaring it empty silently masked the real token and the frontend fell
-    # back to unauthenticated reads. Secrets live only in the cluster, never in
-    # this file: values.yaml is rendered into a manifest committed to the deploy
-    # repo, so any token set here would be published to git.
     NEXT_PUBLIC_MEILI_HOST: http://asylguiden-meilisearch:7700
+    # Not a secret despite the empty value: NEXT_PUBLIC_* is inlined into the
+    # browser bundle at build time, so a Meilisearch key here would be public by
+    # construction and a Secret entry would never reach the client anyway.
     NEXT_PUBLIC_MEILI_SEARCH_KEY: ""
     NEXTAUTH_URL: https://asylguiden.se
-    NEXTAUTH_SECRET: changeme
 
 backend:
   replicaCount: 1
@@ -29,15 +34,15 @@ backend:
     pullPolicy: IfNotPresent
   service:
     port: 1337
+  # Non-secret configuration only — see the note on frontend.env above.
+  #
+  # Supplied via envFrom: APP_KEYS, API_TOKEN_SALT, ADMIN_JWT_SECRET,
+  # TRANSFER_TOKEN_SALT, JWT_SECRET, ENCRYPTION_KEY, DATABASE_USERNAME,
+  # DATABASE_PASSWORD, DATABASE_URL, MEILI_MASTER_KEY.
   env:
     HOST: "0.0.0.0"
     PORT: "1337"
     PUBLIC_URL: https://content.asylguiden.se
-    APP_KEYS: key1,key2,key3,key4
-    API_TOKEN_SALT: changeme
-    ADMIN_JWT_SECRET: changeme
-    TRANSFER_TOKEN_SALT: changeme
-    JWT_SECRET: changeme
     DATABASE_CLIENT: postgres
     DATABASE_HOST: asylguiden-postgres
     DATABASE_PORT: "5432"
@@ -117,7 +122,9 @@ collector:
     repository: ghcr.io/goodtribes-org/asylguiden.se/collector
     tag: latest
     pullPolicy: IfNotPresent
-  strapiApiToken: ""
+  # No strapiApiToken here: the CronJob reads COLLECTOR_STRAPI_API_TOKEN straight
+  # from asylguiden-secret via secretKeyRef, so a value in this file would be
+  # dead weight that leaks into the deploy repo.
   logLevel: info
   schedules:
     # Staggered every Monday UTC to avoid concurrent API calls
