@@ -1,5 +1,6 @@
 import { logger } from '../logger';
 import { strapiClient } from './client';
+import { slugify } from '../utils/slug';
 import type {
   ArticlePayload,
   StrapiArticle,
@@ -24,6 +25,15 @@ export async function findBySourceUrl(sourceUrl: string): Promise<StrapiArticle 
 }
 
 export async function upsertArticle(payload: ArticlePayload): Promise<void> {
+  // Strapi requires `slug` and will not derive it from the title over the REST
+  // API, so fill it in centrally rather than in every collector's transform.
+  // Collector titles carry their period ("… 2026K1 – SCB"), so slugs stay
+  // distinct between runs while remaining stable for the same period.
+  const data: ArticlePayload = {
+    ...payload,
+    slug: payload.slug ?? slugify(payload.title),
+  };
+
   const existing = await findBySourceUrl(payload.sourceUrl);
 
   if (existing) {
@@ -33,12 +43,12 @@ export async function upsertArticle(payload: ArticlePayload): Promise<void> {
     );
     await strapiClient.put<StrapiSingleResponse<StrapiArticle>>(
       `/api/articles/${existing.documentId}`,
-      { data: payload },
+      { data },
     );
   } else {
     logger.info({ sourceUrl: payload.sourceUrl }, 'Creating new article');
     await strapiClient.post<StrapiSingleResponse<StrapiArticle>>('/api/articles', {
-      data: payload,
+      data,
     });
   }
 }

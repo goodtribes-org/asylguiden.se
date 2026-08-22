@@ -4,17 +4,22 @@ import type { ScbResponse } from './client';
 import { buildSyntheticSourceUrl } from '../../utils/slug';
 
 const SOURCE_ORG = 'SCB – Statistiska centralbyrån';
-const BASE_API_URL = 'https://api.scb.se/OV0104/v1/doris/sv/ssd/AM/AKU/AKU110K';
+const BASE_API_URL =
+  'https://api.scb.se/OV0104/v1/doris/sv/ssd/AM/AM0401/AM0401R/AKURLBefInrUtrK';
 
 export function transformScbData(period: string, data: ScbResponse): ArticlePayload {
   const sourceUrl = buildSyntheticSourceUrl(BASE_API_URL, { period });
 
   // Extract values from PxWebApi response
+  // The query pins every dimension except the quarter, so each row is a single
+  // employment-rate figure. Labelling by the raw key would print SCB's internal
+  // codes ("SYSP – 23 – O_DATA – 1+2 – tot15-74 – 2026K2") to readers, so label
+  // by the quarter, which is the only part that varies.
   const stats: Record<string, string> = {};
   for (const row of data.data) {
-    const label = row.key.join(' – ');
+    const quarter = row.key[row.key.length - 1] ?? period;
     const value = row.values[0] ?? '–';
-    stats[label] = value;
+    stats[`Sysselsättningsgrad, utrikes födda 15–74 år (${quarter})`] = `${value} %`;
   }
 
   // Get column headers for context
@@ -36,10 +41,12 @@ export function transformScbData(period: string, data: ScbResponse): ArticlePayl
     sourceAttribution(SOURCE_ORG, sourceUrl),
   ];
 
+  // Was computed and then thrown away, leaving every summary identical apart
+  // from the period. The figure is the one thing a reader wants up front.
   const firstValue = data.data[0]?.values[0] ?? '–';
   const summary =
-    `SCB-statistik om sysselsättning bland utrikesfödda i Sverige för ${period}. ` +
-    `Data från Arbetskraftsundersökningen (AKU).`;
+    `Sysselsättningsgraden bland utrikes födda i Sverige var ${firstValue} procent ` +
+    `under ${period}. Statistik från SCB:s arbetskraftsundersökning (AKU), 15–74 år.`;
 
   return {
     title: `Arbetsmarknad utrikesfödda ${period} – SCB`,
