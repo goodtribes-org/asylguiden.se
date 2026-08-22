@@ -54,6 +54,9 @@ export type StrapiBlock =
 // Strapi Article payload for create/update
 export interface ArticlePayload {
   title: string;
+  // Optional here, but required by Strapi. upsertArticle derives it from the
+  // title when a collector does not set one, so no collector has to remember.
+  slug?: string;
   summary: string;
   content: StrapiBlock[];
   sourceUrl: string;

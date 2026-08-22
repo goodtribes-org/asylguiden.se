@@ -67,17 +67,50 @@ export interface ScbQuery {
 }
 
 /**
- * Fetch employed foreign-born persons in Sweden (sysselsättningsgrad utrikesfödda).
- * Table: AM/AKU/AKU110K — Labour force survey, employed by country of birth.
+ * Table path for the AKU series broken down by domestic/foreign born.
+ *
+ * The previous path, /AM/AKU/AKU110K, does not exist. SCB's PxWeb tree is keyed
+ * by product codes, not acronyms: the AKU product is AM0401 and the
+ * domestic/foreign-born folder within it is AM0401R. Every level of the old
+ * path below /AM was wrong, which is why even a plain GET returned 400.
+ */
+export const FOREIGN_BORN_TABLE_PATH = '/AM/AM0401/AM0401R/AKURLBefInrUtrK';
+
+/**
+ * Fetch the employment rate for foreign-born people in Sweden for one quarter.
+ *
+ * Every dimension is pinned to a single value so the response is exactly one
+ * row. The codes are taken from the table's own metadata — the old query used
+ * `Fodelseland: utrikesfodda`, a variable this table does not have:
+ *
+ *   Arbetskraftstillh SYSP     sysselsättningsgrad, procent
+ *   InrikesUtrikes    23       utrikes födda
+ *   TypData           O_DATA   icke säsongrensad (raw, not seasonally adjusted)
+ *   Kon               1+2      both sexes
+ *   Alder             tot15-74 totalt 15–74 år
  */
 export async function fetchForeignBornEmployment(period: string): Promise<ScbResponse> {
-  // AM/AKU/AKU110K: Employed 15–74 years, country of birth, quarter
-  const tablePath = '/AM/AKU/AKU110K';
   const query: ScbQuery = {
     query: [
       {
-        code: 'Fodelseland',
-        selection: { filter: 'item', values: ['utrikesfodda'] },
+        code: 'Arbetskraftstillh',
+        selection: { filter: 'item', values: ['SYSP'] },
+      },
+      {
+        code: 'InrikesUtrikes',
+        selection: { filter: 'item', values: ['23'] },
+      },
+      {
+        code: 'TypData',
+        selection: { filter: 'item', values: ['O_DATA'] },
+      },
+      {
+        code: 'Kon',
+        selection: { filter: 'item', values: ['1+2'] },
+      },
+      {
+        code: 'Alder',
+        selection: { filter: 'item', values: ['tot15-74'] },
       },
       {
         code: 'Tid',
@@ -86,5 +119,5 @@ export async function fetchForeignBornEmployment(period: string): Promise<ScbRes
     ],
     response: { format: 'json' },
   };
-  return queryScbTable(tablePath, query);
+  return queryScbTable(FOREIGN_BORN_TABLE_PATH, query);
 }

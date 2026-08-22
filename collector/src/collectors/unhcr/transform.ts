@@ -20,9 +20,9 @@ export function transformUnhcrData(
     .slice(0, 10);
 
   const totalApplications = seekers.reduce((sum, e) => sum + (e.applied ?? 0), 0);
-  const totalRecognized = decisions.reduce((sum, e) => sum + (e.decisions_recognized ?? 0), 0);
-  const totalRejected = decisions.reduce((sum, e) => sum + (e.decisions_rejected ?? 0), 0);
-  const totalDecisions = decisions.reduce((sum, e) => sum + (e.decisions_total ?? 0), 0);
+  const totalRecognized = decisions.reduce((sum, e) => sum + (e.dec_recognized ?? 0), 0);
+  const totalRejected = decisions.reduce((sum, e) => sum + (e.dec_rejected ?? 0), 0);
+  const totalDecisions = decisions.reduce((sum, e) => sum + (e.dec_total ?? 0), 0);
 
   const originStats: Record<string, number> = {};
   for (const entry of topOrigins) {

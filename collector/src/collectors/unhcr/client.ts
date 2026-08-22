@@ -18,31 +18,36 @@ export interface UnhcrAsylumSeekersResponse {
   };
 }
 
+// Field names below are the ones the API actually returns, verified against a
+// live response. The decision counts are prefixed `dec_`, not `decisions_` —
+// reading the longer names yielded undefined for every row, so the totals
+// silently summed to zero instead of failing.
 export interface UnhcrAsylumEntry {
   year: number;
   coo?: string;      // Country of origin ISO3
   coo_name?: string;
   coa?: string;      // Country of asylum ISO3
   coa_name?: string;
-  asylum_seekers?: number;
-  recognized_refugees?: number;
-  rejected?: number;
-  decisions_recognized?: number;
-  decisions_other?: number;
-  decisions_rejected?: number;
-  decisions_closed?: number;
-  decisions_total?: number;
-  applied?: number;
-  total?: number;
+  applied?: number;  // Applications lodged (asylum-applications endpoint)
+  dec_recognized?: number;
+  dec_other?: number;
+  dec_rejected?: number;
+  dec_closed?: number;
+  dec_total?: number;
 }
 
 /**
  * Fetch asylum applications to Sweden for the most recent available year.
- * UNHCR API: GET /asylum-seekers/?coa=SWE&year=<year>&limit=50
+ * UNHCR API: GET /asylum-applications/?coa=SWE&year=<year>&limit=50
+ *
+ * The endpoint is `asylum-applications`, not `asylum-seekers`. The latter is a
+ * different concept in UNHCR's model (stock of pending seekers rather than
+ * applications lodged) and no longer exists on this API — it returned a 404
+ * HTML error page, which axios surfaced as a failure for every run.
  */
 export async function fetchAsylumSeekersToSweden(year: number): Promise<UnhcrAsylumEntry[]> {
   return withRetry(async () => {
-    const response = await client.get<UnhcrAsylumSeekersResponse>('/asylum-seekers/', {
+    const response = await client.get<UnhcrAsylumSeekersResponse>('/asylum-applications/', {
       params: {
         coa: 'SWE',
         year,

@@ -40,9 +40,15 @@ export async function fetchEurostatAsylumApplications(
         geo: 'SE',
         time: year,
         citizen: 'TOTAL',
-        asyl_app: 'ASY_APP',
+        // The dimension is `applicant` (TOTAL / FRST first-time / SSEQ
+        // subsequent). There is no `asyl_app` dimension on this dataset, and
+        // Eurostat rejects an undefined dimension outright with
+        // INVALID_QUERY_DIMENSION rather than ignoring it — so every request
+        // this collector made came back 400.
+        applicant: 'TOTAL',
         sex: 'T',
         age: 'TOTAL',
+        unit: 'PER',
         format: 'JSON',
         lang: 'EN',
       },
