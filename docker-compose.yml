@@ -80,8 +80,11 @@ services:
     environment:
       NEXT_PUBLIC_STRAPI_URL: http://strapi:1337
       STRAPI_API_TOKEN: ${STRAPI_API_TOKEN}
-      NEXT_PUBLIC_MEILI_HOST: http://meilisearch:7700
-      NEXT_PUBLIC_MEILI_SEARCH_KEY: ${MEILI_SEARCH_KEY}
+      # Plain names, not NEXT_PUBLIC_*: searches run server-side in /api/search,
+      # and NEXT_PUBLIC_* would be inlined at build time rather than read here.
+      MEILI_HOST: http://meilisearch:7700
+      MEILI_SEARCH_KEY: ${MEILI_SEARCH_KEY}
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-changeme}
       NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       DATABASE_URL: postgresql://${POSTGRES_USER:-asylguiden}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/asylguiden_users
