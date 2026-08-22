@@ -57,6 +57,9 @@ export interface ArticlePayload {
   // Optional here, but required by Strapi. upsertArticle derives it from the
   // title when a collector does not set one, so no collector has to remember.
   slug?: string;
+  // Defaults to sv in upsertArticle. Collectors emit Swedish prose, and leaving
+  // this unset filed every article under Strapi's default locale instead.
+  locale?: string;
   summary: string;
   content: StrapiBlock[];
   sourceUrl: string;
