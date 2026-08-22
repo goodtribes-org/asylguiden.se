@@ -26,15 +26,15 @@ spec:
   {{- end }}
   rules:
     {{- range .Values.ingress.hosts }}
-    - host: {{ . | quote }}
+    - host: {{ .host | quote }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: asylguiden-frontend
+                name: {{ .service }}
                 port:
-                  number: {{ $.Values.frontend.service.port }}
+                  number: {{ .port }}
     {{- end }}
 {{- end }}

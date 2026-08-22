@@ -27,6 +27,7 @@ backend:
   env:
     HOST: "0.0.0.0"
     PORT: "1337"
+    PUBLIC_URL: https://content.asylguiden.se
     APP_KEYS: key1,key2,key3,key4
     API_TOKEN_SALT: changeme
     ADMIN_JWT_SECRET: changeme
@@ -77,13 +78,28 @@ ingress:
     kubernetes.io/tls-acme: "true"
     traefik.ingress.kubernetes.io/router.entrypoints: websecure,web
   hosts:
-    - asylguiden.se
-    - www.asylguiden.se
+    - host: asylguiden.se
+      service: asylguiden-frontend
+      port: 3000
+    - host: www.asylguiden.se
+      service: asylguiden-frontend
+      port: 3000
+    # Strapi, reachable publicly so editors can use the admin UI without a
+    # port-forward. Serves both /admin and the content API on this host.
+    - host: content.asylguiden.se
+      service: asylguiden-backend
+      port: 1337
   tls:
     - secretName: asylguiden-tls
       hosts:
         - asylguiden.se
         - www.asylguiden.se
+    # Deliberately a separate certificate from the apex. cert-manager reissues a
+    # secret as a unit, so sharing one would let a failed HTTP01 challenge for the
+    # new host take the working asylguiden.se certificate down with it.
+    - secretName: asylguiden-cms-tls
+      hosts:
+        - content.asylguiden.se
 
 collector:
   image:
