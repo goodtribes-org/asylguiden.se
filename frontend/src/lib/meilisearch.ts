@@ -44,8 +44,18 @@ export async function searchArticles(query: string, options: SearchOptions) {
     highlightPostTag: "</mark>",
   });
 
-  const totalHits = results.estimatedTotalHits || 0;
-  const totalPages = Math.ceil(totalHits / hitsPerPage);
+  // Passing `page`/`hitsPerPage` puts Meilisearch into finite pagination, where
+  // it returns exact `totalHits`/`totalPages` and omits `estimatedTotalHits`
+  // entirely. Reading only the estimate therefore yielded 0 on every search:
+  // results rendered while the page claimed to have found none, and totalPages
+  // collapsed to 0 so pagination never appeared. Prefer the exact count and keep
+  // the estimate as the fallback for non-paginated callers.
+  const paginated = results as typeof results & {
+    totalHits?: number;
+    totalPages?: number;
+  };
+  const totalHits = paginated.totalHits ?? results.estimatedTotalHits ?? 0;
+  const totalPages = paginated.totalPages ?? Math.ceil(totalHits / hitsPerPage);
 
   return {
     hits: results.hits,
