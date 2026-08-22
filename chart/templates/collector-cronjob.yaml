@@ -11,6 +11,10 @@ metadata:
     app.kubernetes.io/component: {{ $collector }}
 spec:
   schedule: {{ $schedule | quote }}
+  # Rendered explicitly, including when false. Leaving it out is what let a
+  # manual `suspend: true` survive unnoticed — ArgoCD cannot heal a field the
+  # desired state never mentions.
+  suspend: {{ has $collector ($.Values.collector.suspended | default list) }}
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3

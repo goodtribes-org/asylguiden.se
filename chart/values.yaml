@@ -135,6 +135,31 @@ collector:
     frontex: "0 9 * * 1"
     migrationsverket: "0 10 * * 1"
     migrationsverket-excel: "0 11 * * 1"
+  # Collectors whose CronJob is created suspended.
+  #
+  # All six were suspended by hand in the cluster after every upstream broke,
+  # and ArgoCD could not heal that back: the template never rendered `suspend`,
+  # so there was no desired value to diff against and the manual change stuck
+  # invisibly. lastSuccessfulTime was empty on every CronJob — not one had ever
+  # produced an article. Declaring it here makes the intent explicit and lets
+  # ArgoCD hold it.
+  #
+  # The two below stay suspended because neither can currently produce data,
+  # and a weekly failing job is just noise that trains people to ignore alerts:
+  #
+  #   frontex          — points at a dataset-search API parsed as a CKAN
+  #                      datastore, against the retired /euodp/ portal. Needs a
+  #                      real source chosen before it can work at all.
+  #   migrationsverket — Migrationsverket suspended asylum statistics from
+  #                      2026-06-12 pending the EU migration pact rework, with
+  #                      backfill "successively during autumn 2026" and no date.
+  #                      Its scraped page 404s after a site restructure too.
+  #
+  # Unsuspend each one as its source is fixed, rather than all at once.
+  suspended:
+    - frontex
+    - migrationsverket
+    - migrationsverket-excel
 
 imagePullSecrets:
   - name: ghcr-pull-secret
