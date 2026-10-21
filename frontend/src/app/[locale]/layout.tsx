@@ -1,6 +1,6 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
-import { Inter, Noto_Sans_Arabic } from "next/font/google";
+import { Inter, Noto_Sans_Arabic, Noto_Sans_Ethiopic } from "next/font/google";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Header } from "@/components/layout/Header";
@@ -16,6 +16,12 @@ const inter = Inter({
 const notoArabic = Noto_Sans_Arabic({
   subsets: ["arabic"],
   variable: "--font-noto-arabic",
+  display: "swap",
+});
+
+const notoEthiopic = Noto_Sans_Ethiopic({
+  subsets: ["ethiopic"],
+  variable: "--font-noto-ethiopic",
   display: "swap",
 });
 
@@ -38,11 +44,18 @@ export default async function LocaleLayout({ children, params }: Props) {
   setRequestLocale(locale);
 
   const messages = await getMessages();
-  const isRTL = locale === "ar";
+  // Persian is right-to-left too, not only Arabic.
+  const isRTL = ["ar", "fa"].includes(locale);
   const dir = isRTL ? "rtl" : "ltr";
-  const fontClass = isRTL
-    ? `${notoArabic.variable} font-sans`
-    : `${inter.variable} font-sans`;
+
+  // Every font variable is declared on every page, deliberately.
+  // globals.css builds --font-sans as a stack referencing all of them; a
+  // var() that cannot be substituted makes the whole custom property invalid
+  // at computed-value time, so defining only one of them (as this did before)
+  // left --font-sans invalid and dropped the page to a browser default.
+  // Which script actually renders is decided by the stack order, not by which
+  // variable happens to exist.
+  const fontClass = `${inter.variable} ${notoArabic.variable} ${notoEthiopic.variable} font-sans`;
 
   return (
     <html lang={locale} dir={dir}>

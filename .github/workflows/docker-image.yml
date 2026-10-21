@@ -10,6 +10,24 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
+  check-frontend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check locale message trees are in step
+        working-directory: frontend
+        run: node scripts/check-messages.mjs
+
   build-frontend:
     runs-on: ubuntu-latest
     permissions:
